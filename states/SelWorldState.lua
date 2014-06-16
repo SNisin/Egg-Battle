@@ -13,7 +13,7 @@
    limitations under the License.
 ]]
 
-SelWorldState = {}
+local SelWorldState = {}
 
 local BUTTON_WIDTH = 0
 local BUTTON_HEIGHT = 0

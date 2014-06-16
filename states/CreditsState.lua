@@ -13,7 +13,7 @@
    limitations under the License.
 ]]
 
-CreditsState = {}
+local CreditsState = {}
 
 local colors = {
 	link = {25, 34, 154},

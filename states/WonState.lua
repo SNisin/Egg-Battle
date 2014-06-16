@@ -13,7 +13,7 @@
    limitations under the License.
 ]]
 
-WonState = {}
+local WonState = {}
 
 function WonState.update(dt)
 	-- Not called

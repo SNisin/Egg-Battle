@@ -13,7 +13,7 @@
    limitations under the License.
 ]]
 
-LostState = {}
+local LostState = {}
 
 function LostState.update(dt)
 	-- Not called

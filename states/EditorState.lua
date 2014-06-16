@@ -13,7 +13,7 @@
    limitations under the License.
 ]]
 
-EditorState = {}
+local EditorState = {}
 
 function EditorState.load()
 	edit = {

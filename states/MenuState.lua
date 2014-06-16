@@ -13,7 +13,8 @@
    limitations under the License.
 ]]
 
-MenuState = {}
+local MenuState = {}
+
 function MenuState.load()
 
 end

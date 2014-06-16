@@ -13,7 +13,8 @@
    limitations under the License.
 ]]
 
-GameState = {}
+local GameState = {}
+
 function GameState.load()
 	
 end
