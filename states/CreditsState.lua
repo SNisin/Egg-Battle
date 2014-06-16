@@ -14,6 +14,8 @@
 ]]
 
 local CreditsState = {}
+local this = {}
+CreditsState.this = this
 
 local colors = {
 	link = {25, 34, 154},

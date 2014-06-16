@@ -14,6 +14,8 @@
 ]]
 
 local SelLevelState = {}
+local this = {}
+SelLevelState.this = this
 
 local BUTTON_WIDTH = 0
 local BUTTON_HEIGHT = 0
@@ -34,7 +36,7 @@ function SelLevelState.update(dt)
 		levelScroll = levelClickedScroll + (levelClickedY-love.mouse.getY())
 	end
 	
-	local minoff, maxoff = getLevelMinMax()
+	local minoff, maxoff = this.getLevelMinMax()
 	
 	if levelScroll > maxoff then
 		levelScroll = maxoff
@@ -48,15 +50,15 @@ function SelLevelState.update(dt)
 end
 
 function SelLevelState.draw()
-	local numinrow, offs = getLevelVars()
+	local numinrow, offs = this.getLevelVars()
 	for i = 1, 15 do
-		drawLevelButton(i, (i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-levelScroll)
+		this.drawLevelButton(i, (i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-levelScroll)
 	end
 	love.graphics.setColor(255,255,255,150)
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
 	drawButton(0, "< Back", 0, font:getWidth("< Back")+20*pixelscale)
 	
-	local minoff, maxoff = getLevelMinMax()
+	local minoff, maxoff = this.getLevelMinMax()
 	if maxoff > minoff then
 		love.graphics.setColor(0,0,0,150)
 		rounded_rectangle("fill", love.graphics.getWidth()-15*pixelscale, math.floor((levelScroll+game.offY)/(maxoff+game.offY)*(love.graphics.getHeight()-150*pixelscale-game.offY*2)+game.offY), 5*pixelscale, 150*pixelscale, 2*pixelscale)
@@ -71,7 +73,7 @@ function SelLevelState.mousepressed(x, y, button)
 		levelNotSelect = true
 		if y > game.offY then
 		for i = 1, 15 do
-			local numinrow, offs = getLevelVars()
+			local numinrow, offs = this.getLevelVars()
 			if checkButton((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-levelScroll, BUTTON_WIDTH, BUTTON_HEIGHT) then
 				levelClickedOn = i
 				levelNotSelect = false
@@ -105,7 +107,7 @@ function SelLevelState.mousereleased(x, y, button)
 		levelClickedOn = 0
 	end
 end
-function drawLevelButton(level, x, y)
+function this.drawLevelButton(level, x, y)
 	if save.worlds and save.worlds[game.worldselected] and save.worlds[game.worldselected][level] then
 		love.graphics.setColor(150,255,150,255)
 
@@ -128,36 +130,17 @@ function drawLevelButton(level, x, y)
 	love.graphics.setColor(0,0,0,255)
 end
 
-function getLevelVars()
+function this.getLevelVars()
 	local numinrow = math.max(math.floor(love.graphics.getWidth()/(BUTTON_WIDTH*1.5)),1)
 	local offs = (love.graphics.getWidth()/numinrow-BUTTON_WIDTH)/2
 	return numinrow, offs
 end
 
-function getLevelMinMax()
-	local numinrow, offs = getLevelVars()
+function this.getLevelMinMax()
+	local numinrow, offs = this.getLevelVars()
 	local rows = math.floor((14)/numinrow)+1
 	return -game.offY, rows*(offs+BUTTON_HEIGHT)+offs - love.graphics.getHeight()
 end
-function canPlayLevel(level, all)
-	if all then
-		game.worldselected = math.floor((level-1)/15)+1
-		level = (level-1)%15+1
-		--print(game.worldselected, level)
-	end
-	if save.worlds and save.worlds[game.worldselected] and save.worlds[game.worldselected][level] then
-		return true
-	end
-	local notmade = 3
-	for i = 1,level-1 do
-		if (not save.worlds) or (not save.worlds[game.worldselected]) or (not save.worlds[game.worldselected][i]) then
-			notmade = notmade-1
-		end
-	end
-	if notmade > 0 then
-		return true
-	end
-	return false
-end
+
 
 StateManager.registerState("selectlevel", SelLevelState)

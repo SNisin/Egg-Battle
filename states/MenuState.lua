@@ -14,13 +14,8 @@
 ]]
 
 local MenuState = {}
-
-function MenuState.load()
-
-end
-function MenuState.update(dt)
-	
-end
+local this = {}
+MenuState.this = this
 
 function MenuState.draw()
 	love.graphics.setColor(255,255,255,255)

@@ -14,10 +14,9 @@
 ]]
 
 local GameState = {}
+local this = {}
+GameState.this = this
 
-function GameState.load()
-	
-end
 function GameState.update(dt)
 	for i,v in ipairs(clvl.projectiles) do
 		if v.dir == "left" then
@@ -29,12 +28,12 @@ function GameState.update(dt)
 		elseif v.dir == "down" then
 			v.y = v.y+200*dt*game.scaleY
 		end
-		if v.x < 0 or v.y < 0 or v.x > #clvl.world[1]*game.tilew or v.y > #clvl.world*game.tileh or hitegg(v.x, v.y) then
+		if v.x < 0 or v.y < 0 or v.x > #clvl.world[1]*game.tilew or v.y > #clvl.world*game.tileh or this.hitegg(v.x, v.y) then
 
 			table.remove(clvl.projectiles, i)
 		end
 	end
-	if checkwin() then
+	if this.checkwin() then
 		if game.editt then
 			editmessage = "WON!"
 			editmessageop = 255
@@ -56,7 +55,7 @@ function GameState.update(dt)
 			save_game()
 		end
 	end
-	if #clvl.projectiles == 0 and not checkwin() and clvl.taps <= 0 then
+	if #clvl.projectiles == 0 and not this.checkwin() and clvl.taps <= 0 then
 		if game.editt then
 			editmessage = "LOST!"
 			editmessageop = 255
@@ -99,7 +98,7 @@ function GameState.draw()
 end
 
 function GameState.mousepressed(x, y, button)
-	if clvl.taps>0 and hitegg(x, y-game.offY) then
+	if clvl.taps>0 and this.hitegg(x, y-game.offY) then
 		clvl.taps = clvl.taps - 1
 	end
 end
@@ -114,7 +113,7 @@ function GameState.keypressed(k)
 	end
 end
 
-function checkwin()
+function this.checkwin()
 	for y,v in ipairs(clvl.world) do
 		for x,v2 in ipairs(v) do
 			if eggs[v2] then
@@ -125,7 +124,7 @@ function checkwin()
 	return true
 end
 
-function hitegg(mx, my)
+function this.hitegg(mx, my)
 	local x = math.floor(mx/game.tilew)+1
 	local y = math.floor(my/game.tileh)+1
 	if clvl.world[y] and clvl.world[y][x] and clvl.world[y][x]>0 then

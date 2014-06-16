@@ -14,10 +14,8 @@
 ]]
 
 local LostState = {}
-
-function LostState.update(dt)
-	-- Not called
-end
+local this = {}
+LostState.this = this
 
 function LostState.draw()
 	love.graphics.setColor(0,0,0,100)

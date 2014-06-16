@@ -14,6 +14,8 @@
 ]]
 
 local SelWorldState = {}
+local this = {}
+SelWorldState.this = this
 
 local BUTTON_WIDTH = 0
 local BUTTON_HEIGHT = 0
@@ -34,7 +36,7 @@ function SelWorldState.update(dt)
 		worldScroll = worldClickedScroll + (worldClickedY-love.mouse.getY())
 	end
 	
-	local minoff, maxoff = getWorldMinMax()
+	local minoff, maxoff = this.getWorldMinMax()
 	
 	if worldScroll > maxoff then
 		worldScroll = maxoff
@@ -48,17 +50,17 @@ function SelWorldState.update(dt)
 end
 
 function SelWorldState.draw()
-	local numinrow, offs = getWorldVars()
+	local numinrow, offs = this.getWorldVars()
 	for i, v in ipairs(worlds) do
 		if i<=math.floor(#levels/15) then
-			drawWorldButton(i, (i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-worldScroll)
+			this.drawWorldButton(i, (i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-worldScroll)
 		end
 	end
 	love.graphics.setColor(255,255,255,150)
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
 	drawButton(0, "< Back", 0, font:getWidth("< Back")+20*pixelscale)
 	
-	local minoff, maxoff = getWorldMinMax()
+	local minoff, maxoff = this.getWorldMinMax()
 	if maxoff > minoff then
 		love.graphics.setColor(0,0,0,150)
 		rounded_rectangle("fill", love.graphics.getWidth()-15*pixelscale, math.floor((worldScroll+game.offY)/(maxoff+game.offY)*(love.graphics.getHeight()-150*pixelscale-game.offY*2)+game.offY), 5*pixelscale, 150*pixelscale, 2*pixelscale)
@@ -74,7 +76,7 @@ function SelWorldState.mousepressed(x, y, button)
 		if y > game.offY then
 			for i, v in ipairs(worlds) do
 					if i<=math.floor(#levels/15) then
-					local numinrow, offs = getWorldVars()
+					local numinrow, offs = this.getWorldVars()
 					if checkButton((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-worldScroll, BUTTON_WIDTH, BUTTON_HEIGHT) then
 						worldClickedOn = i
 						worldNotSelect = false
@@ -108,7 +110,7 @@ function SelWorldState.mousereleased(x, y, button)
 		worldClickedOn = 0
 	end
 end
-function drawWorldButton(world, x, y)
+function this.drawWorldButton(world, x, y)
 	
 	local worldprog = 0
 	if save.worlds and save.worlds[world] then
@@ -137,7 +139,7 @@ function drawWorldButton(world, x, y)
 	love.graphics.printf(worldprog.."/15", x, y+BUTTON_HEIGHT-10-font:getHeight(), BUTTON_WIDTH, "center")
 end
 
-function getWorldVars()
+function this.getWorldVars()
 	local numinrow = math.max(math.floor(love.graphics.getWidth()/(BUTTON_WIDTH*1.2)),1)
 	--if love.graphics.getWidth() < BUTTON_WIDTH*2 then
 	--	numinrow = 1
@@ -146,8 +148,8 @@ function getWorldVars()
 	return numinrow, offs
 end
 
-function getWorldMinMax()
-	local numinrow, offs = getWorldVars()
+function this.getWorldMinMax()
+	local numinrow, offs = this.getWorldVars()
 	local rows = math.floor((math.floor(#levels/15)-1)/numinrow)+1
 	return -game.offY, rows*(offs+BUTTON_HEIGHT)+offs - love.graphics.getHeight()
 end

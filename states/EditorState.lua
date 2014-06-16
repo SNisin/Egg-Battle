@@ -14,6 +14,8 @@
 ]]
 
 local EditorState = {}
+local this = {}
+EditorState.this = this
 
 function EditorState.load()
 	edit = {

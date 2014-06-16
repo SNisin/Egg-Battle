@@ -14,10 +14,8 @@
 ]]
 
 local WonState = {}
-
-function WonState.update(dt)
-	-- Not called
-end
+local this = {}
+WonState.this = this
 
 function WonState.draw()
 	love.graphics.setColor(0,0,0,100)

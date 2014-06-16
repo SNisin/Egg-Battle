@@ -187,6 +187,26 @@ function loadLevel(level)
 	end
 	
 end
+function canPlayLevel(level, all)
+	if all then
+		game.worldselected = math.floor((level-1)/15)+1
+		level = (level-1)%15+1
+		--print(game.worldselected, level)
+	end
+	if save.worlds and save.worlds[game.worldselected] and save.worlds[game.worldselected][level] then
+		return true
+	end
+	local notmade = 3
+	for i = 1,level-1 do
+		if (not save.worlds) or (not save.worlds[game.worldselected]) or (not save.worlds[game.worldselected][i]) then
+			notmade = notmade-1
+		end
+	end
+	if notmade > 0 then
+		return true
+	end
+	return false
+end
 
 function table.copy(t, deep, seen)
     seen = seen or {}
