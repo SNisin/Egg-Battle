@@ -176,7 +176,7 @@ function EditorState.keypressed(k)
 		clvl.level = edit.level
 		clvl.taps = edit.taps
 		clvl.projectiles = {}
-		game.state = "game"
+		StateManager.setState("game")
 		game.editt = true
 	elseif k == " " then
 		if edit.level > 0 then
@@ -247,3 +247,5 @@ function checkempty(wld)
 	end
 	return true
 end
+
+StateManager.registerState("editor", EditorState)

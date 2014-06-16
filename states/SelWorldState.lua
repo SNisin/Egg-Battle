@@ -83,7 +83,7 @@ function SelWorldState.mousepressed(x, y, button)
 			end
 		else
 			if checkButton(0, 0, font:getWidth("< Back")+20*pixelscale, game.offY) then
-				game.state = "menu"
+				StateManager.setState("menu")
 			end
 		end
 	elseif button == "wu" then
@@ -95,7 +95,7 @@ function SelWorldState.mousepressed(x, y, button)
 end
 function SelWorldState.keypressed(k)
 	if k == "escape" then
-		game.state = "menu"
+		StateManager.setState("menu")
 	end
 end
 function SelWorldState.mousereleased(x, y, button)
@@ -103,7 +103,7 @@ function SelWorldState.mousereleased(x, y, button)
 		if not worldNotSelect and worlds[worldClickedOn] then
 			print("world "..worldClickedOn)
 			game.worldselected = worldClickedOn
-			game.state = "selectlevel"
+			StateManager.setState("selectlevel")
 		end
 		worldClickedOn = 0
 	end
@@ -151,3 +151,5 @@ function getWorldMinMax()
 	local rows = math.floor((math.floor(#levels/15)-1)/numinrow)+1
 	return -game.offY, rows*(offs+BUTTON_HEIGHT)+offs - love.graphics.getHeight()
 end
+
+StateManager.registerState("selectworld", SelWorldState)

@@ -42,6 +42,7 @@ function LostState.mousepressed(x, y, button)
 		loadLevel(clvl.level+1)
 	end
 	if checkButton(nil, love.graphics.getHeight()/2+60*pixelscale) then
-		game.state = "menu"
+		StateManager.setState("menu")
 	end
 end
+StateManager.registerState("lost", LostState)

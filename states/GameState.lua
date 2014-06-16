@@ -38,9 +38,9 @@ function GameState.update(dt)
 			editmessage = "WON!"
 			editmessageop = 255
 			
-			game.state = "editor"
+			StateManager.setState("editor")
 		else
-			game.state = "won"
+			StateManager.setState("won")
 			local world = math.floor((clvl.level-1)/15)+1
 			if clvl.level > save.crnt then
 				save.crnt = clvl.level
@@ -60,9 +60,9 @@ function GameState.update(dt)
 			editmessage = "LOST!"
 			editmessageop = 255
 		
-			game.state = "editor"
+			StateManager.setState("editor")
 		else
-			game.state = "lost"
+			StateManager.setState("lost")
 		end
 	end
 end
@@ -106,9 +106,9 @@ end
 function GameState.keypressed(k)
 	if k == "escape" then
 		if game.editt then
-			game.state = "editor"
+			StateManager.setState("editor")
 		else
-			game.state = "selectworld"
+			StateManager.setState("selectworld")
 		end
 	end
 end
@@ -140,3 +140,5 @@ function hitegg(mx, my)
 	end
 	return false
 end
+
+StateManager.registerState("game", GameState)

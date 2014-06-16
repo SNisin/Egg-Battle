@@ -79,7 +79,7 @@ function SelLevelState.mousepressed(x, y, button)
 		end
 		else
 			if checkButton(0, 0, font:getWidth("< Back")+20*pixelscale, game.offY) then
-				game.state = "selectworld"
+				StateManager.setState("selectworld")
 			end
 		end
 	elseif button == "wu" then
@@ -91,7 +91,7 @@ function SelLevelState.mousepressed(x, y, button)
 end
 function SelLevelState.keypressed(k)
 	if k == "escape" then
-		game.state = "selectworld"
+		StateManager.setState("selectworld")
 	end
 end
 function SelLevelState.mousereleased(x, y, button)
@@ -159,3 +159,5 @@ function canPlayLevel(level, all)
 	end
 	return false
 end
+
+StateManager.registerState("selectlevel", SelLevelState)

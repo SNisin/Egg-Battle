@@ -12,7 +12,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 ]]
-   
+  
+StateManager = require("lua.StateManager")
 require("Tserial")
 require("lua/buttons")
 require("lua/save")
@@ -26,8 +27,8 @@ require("states/SelLevelState")
 require("states/CreditsState")
 --lovebird = require "lovebird"
 
-
-function love.load()
+local AllState = {}
+function AllState.load()
 	love.filesystem.setIdentity("EggBattle")
 	
 	-- Images
@@ -56,12 +57,11 @@ function love.load()
 	hit = love.audio.newSource( "sfx/Hit.wav", "static" )
 	
 	-- Variables
-	OS = "Android"
+	OS = love.system.getOS()
 	timet = 0
 	pixelscale = love.window.getPixelScale()
 	font = love.graphics.newFont("gfx/font.ttf",math.floor(20*pixelscale))
 	game = {
-		state="menu"
 	}
 	worlds = {
 		"Boiled egg",
@@ -103,34 +103,8 @@ function love.load()
 	}
 	
 	updateGraphics()
-	
-	EditorState.load()
-	GameState.load()
-	SelWorldState.load()
-	SelLevelState.load()
-	CreditsState.load()
-	
-	
-
-	--[[
-	
-
-		[7] = {
-			world={
-				{0,0,0,0,0},
-				{0,0,0,0,0},
-				{0,0,0,0,0},
-				{0,0,0,0,0},
-				{0,0,0,0,0},
-				{0,0,0,0,0},
-			},
-			taps = 1
-		},
-	
-	]]
 end
-function love.update( dt )
-	--lovebird.update()
+function AllState.update( dt )
 	dt = math.min(dt, 0.1)
 	local backscale = math.max(love.graphics.getWidth()/backimg:getWidth(), love.graphics.getHeight()/backimg:getHeight())
 	timet = timet + dt
@@ -144,21 +118,11 @@ function love.update( dt )
 		cloudspawntime = timet
 		table.insert(clouds, {x=love.graphics.getWidth(), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#cloudsimg), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
 	end
-	if game.state == "game" then
-		GameState.update(dt)
-	elseif game.state == "menu" then
-		MenuState.update(dt)
-	elseif game.state == "selectworld" then
-		SelWorldState.update(dt)
-	elseif game.state == "selectlevel" then
-		SelLevelState.update(dt)
-	elseif game.state == "editor" then
-		EditorState.update(dt)
-	elseif game.state == "credits" then
-		CreditsState.update(dt)
+	if game.state then
+		error("game.state changed to " .. game.state)
 	end
 end
-function love.draw()
+function AllState.draw()
 	love.graphics.setColor(255,255,255,255)
 	local backscale = math.max(love.graphics.getWidth()/backimg:getWidth(), love.graphics.getHeight()/backimg:getHeight())
 	love.graphics.draw(backimg, 0, -(backimg:getHeight()*backscale-love.graphics.getHeight()), 0, backscale, backscale)
@@ -167,83 +131,18 @@ function love.draw()
 		love.graphics.draw(cloudsimg[v.type], v.x, v.y, 0, backscale, backscale)
 	end
 	
-	if game.state == "game" then
-		GameState.draw()
-	elseif game.state == "menu" then
-		MenuState.draw()
-		
-	elseif game.state == "won" then
-		WonState.draw()
-		
-	elseif game.state == "lost" then
-		LostState.draw()
-		
-	elseif game.state == "editor" then
-		EditorState.draw()
-		
-	elseif game.state == "selectworld" then
-		SelWorldState.draw()
-		
-	elseif game.state == "selectlevel" then
-		SelLevelState.draw()
-		
-	elseif game.state == "credits" then
-		CreditsState.draw()
-	end
+
 end
-function love.mousepressed( mx, my, button )
-	if game.state == "game" then
-		GameState.mousepressed( mx, my, button )
-		
-	elseif game.state == "menu" then
-		MenuState.mousepressed( mx, my, button )
-		
-	elseif game.state == "won" then
-		WonState.mousepressed( mx, my, button )
-		
-	elseif game.state == "lost" then
-		LostState.mousepressed( mx, my, button )
-		
-	elseif game.state == "editor" then
-		EditorState.mousepressed( mx, my, button )
-		
-	elseif game.state == "selectworld" then
-		SelWorldState.mousepressed(mx, my, button)
-		
-	elseif game.state == "selectlevel" then
-		SelLevelState.mousepressed(mx, my, button)
-		
-	elseif game.state == "credits" then
-		CreditsState.mousepressed(mx, my, button)
-	end
+function AllState.mousepressed( mx, my, button )
+
 end
-function love.keypressed(k)
-	if game.state == "editor" then
-		EditorState.keypressed(k)
-	elseif game.state == "game" then
-		GameState.keypressed(k)
-	elseif game.state == "selectworld" then
-		SelWorldState.keypressed(k)
-	elseif game.state == "selectlevel" then
-		SelLevelState.keypressed(k)
-	elseif game.state == "menu" then
-		MenuState.keypressed(k)
-	elseif game.state == "credits" then
-		CreditsState.keypressed(k)
-	end
+function AllState.keypressed(k)
+
 end
-function love.mousereleased(x, y, button)
-	if game.state == "selectworld" then
-		SelWorldState.mousereleased(x, y, button)
-		
-	elseif game.state == "selectlevel" then
-		SelLevelState.mousereleased(x, y, button)
-		
-	elseif game.state == "credits" then
-		CreditsState.mousereleased(x, y, button)
-	end
+function AllState.mousereleased(x, y, button)
+
 end
-function love.resize( w, h )
+function AllState.resize( w, h )
 	updateGraphics()
 end
 
@@ -280,11 +179,11 @@ function loadLevel(level)
 	if levels[level] then
 		clvl.world = table.copy(levels[level].world, true)
 		clvl.taps = levels[level].taps
-		game.state = "game"
+		StateManager.setState("game")
 		clvl.level = level
 		clvl.projectiles = {}
 	else
-		game.state = "menu"
+		StateManager.setState("menu")
 	end
 	
 end
@@ -306,3 +205,8 @@ function table.copy(t, deep, seen)
     seen[t] = nt
     return nt
 end
+
+StateManager.registerState("allstate", AllState)
+StateManager.setAlwaysState("allstate")
+StateManager.setState("menu")
+StateManager.registerCallbacks()

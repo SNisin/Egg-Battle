@@ -194,7 +194,7 @@ function CreditsState.mousepressed(x, y, button)
 		else
 			if checkButton(0, 0, font:getWidth("< Back")+20*pixelscale, game.offY) then
 				creditsClickedOn = 0
-				game.state = "menu"
+				StateManager.setState("menu")
 			end
 		end
 	elseif button == "wu" then
@@ -220,6 +220,8 @@ function CreditsState.mousereleased(x, y, button)
 end
 function CreditsState.keypressed(k)
 	if k == "escape" then
-		game.state = "menu"
+		StateManager.setState("menu")
 	end
 end
+
+StateManager.registerState("credits", CreditsState)

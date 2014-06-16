@@ -35,7 +35,7 @@ end
 function WonState.mousepressed(x, y, button)
 	if checkButton(nil, love.graphics.getHeight()/2-120*pixelscale) then
 		if (clvl.level-1)%15 == 14 then
-			game.state = "selectworld"
+			StateManager.setState("selectworld")
 		else
 			loadLevel(clvl.level+1)
 		end
@@ -44,6 +44,8 @@ function WonState.mousepressed(x, y, button)
 		loadLevel(clvl.level)
 	end
 	if checkButton(nil, love.graphics.getHeight()/2+60*pixelscale) then
-		game.state = "menu"
+		StateManager.setState("menu")
 	end
 end
+
+StateManager.registerState("won", WonState)

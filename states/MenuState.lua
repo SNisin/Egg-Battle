@@ -14,7 +14,9 @@
 ]]
 
 MenuState = {}
+function MenuState.load()
 
+end
 function MenuState.update(dt)
 	
 end
@@ -45,13 +47,13 @@ function MenuState.mousepressed(x, y, button)
 		--	loadLevel(math.min(save.crnt+1, #levels))
 		--end
 		if checkButton(nil, love.graphics.getHeight()/2-60*pixelscale) then
-			game.state = "selectworld"
+			StateManager.setState("selectworld")
 		end
 	end
 	if checkButton(nil, love.graphics.getHeight()/2+60*pixelscale) then
 		creditsScroll = -game.offY -10*pixelscale
 		creditsAutoScroll = 0
-		game.state = "credits"
+		StateManager.setState("credits")
 	end
 	if checkButton(nil, love.graphics.getHeight()/2+120*pixelscale) then
 		love.event.quit()
@@ -59,14 +61,15 @@ function MenuState.mousepressed(x, y, button)
 
 	
 	if y > love.graphics.getHeight()-10 then
-		--game.state = "editor"
+		--StateManager.setState("editor")
 	end
 end
 
 function MenuState.keypressed(k)
 	if k == "x" then
-		--game.state = "editor"
+		--StateManager.setState("editor")
 	elseif k == "escape" then
 		love.event.quit()
 	end
 end
+StateManager.registerState("menu", MenuState)
