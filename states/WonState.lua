@@ -17,6 +17,12 @@ local WonState = {}
 local this = {}
 WonState.this = this
 
+function WonState.load()
+	this.buttons = ButtonManager.new()
+end
+function WonState.enter()
+	this.setButtons()
+end
 function WonState.draw()
 	love.graphics.setColor(0,0,0,100)
 	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
@@ -25,25 +31,32 @@ function WonState.draw()
 	love.graphics.setColor(255,255,255,255)
 	love.graphics.print("Level "..clvl.level.." succeeded", (love.graphics.getWidth()-font:getWidth("Level "..clvl.level.." succeeded"))/2, love.graphics.getHeight()/2-150*pixelscale)
 	
-	drawButton(love.graphics.getHeight()/2-120*pixelscale, "Next level")
-	drawButton(love.graphics.getHeight()/2, "Try again")
-	drawButton(love.graphics.getHeight()/2+60*pixelscale, "Return to menu")
+	this.buttons:draw()
 end
 
 function WonState.mousepressed(x, y, button)
-	if checkButton(nil, love.graphics.getHeight()/2-120*pixelscale) then
+	local clickedbutton = this.buttons:getClickedButton(x, y)
+	if clickedbutton == "next" then
 		if (clvl.level-1)%15 == 14 then
 			StateManager.setState("selectworld")
 		else
 			loadLevel(clvl.level+1)
 		end
 	end
-	if checkButton(nil, love.graphics.getHeight()/2) then
+	if clickedbutton == "tryagain" then
 		loadLevel(clvl.level)
 	end
-	if checkButton(nil, love.graphics.getHeight()/2+60*pixelscale) then
+	if clickedbutton == "menu" then
 		StateManager.setState("menu")
 	end
 end
-
+function WonState.resize()
+	this.setButtons()
+end
+function this.setButtons()
+	this.buttons:removeAllButtons()
+	this.buttons:addCenterButton("next", "Next level", love.graphics.getHeight()/2-120*pixelscale)
+	this.buttons:addCenterButton("tryagain", "Try again", love.graphics.getHeight()/2)
+	this.buttons:addCenterButton("menu", "Return to menu", love.graphics.getHeight()/2+60*pixelscale)
+end
 StateManager.registerState("won", WonState)

@@ -17,6 +17,12 @@ local LostState = {}
 local this = {}
 LostState.this = this
 
+function LostState.load()
+	this.buttons = ButtonManager.new()
+end
+function LostState.enter()
+	this.setButtons()
+end
 function LostState.draw()
 	love.graphics.setColor(0,0,0,100)
 	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
@@ -25,22 +31,30 @@ function LostState.draw()
 	love.graphics.setColor(255,255,255,255)
 	love.graphics.print("No moves left", (love.graphics.getWidth()-font:getWidth("No moves left"))/2, love.graphics.getHeight()/2-150*pixelscale)
 	
-	drawButton(love.graphics.getHeight()/2-120*pixelscale, "Try again")
-	if canPlayLevel(clvl.level+1, true) then
-		drawButton(love.graphics.getHeight()/2, "Skip level")
-	end
-	drawButton(love.graphics.getHeight()/2+60*pixelscale, "Return to menu")
+	this.buttons:draw()
 end
 
 function LostState.mousepressed(x, y, button)
-	if checkButton(nil, love.graphics.getHeight()/2-120*pixelscale) then
+	local clickedbutton = this.buttons:getClickedButton(x, y)
+	if clickedbutton == "tryagain" then
 		loadLevel(clvl.level)
 	end
-	if checkButton(nil, love.graphics.getHeight()/2) and canPlayLevel(clvl.level+1, true) then
+	if clickedbutton == "skip" and canPlayLevel(clvl.level+1, true) then
 		loadLevel(clvl.level+1)
 	end
-	if checkButton(nil, love.graphics.getHeight()/2+60*pixelscale) then
+	if clickedbutton == "menu" then
 		StateManager.setState("menu")
 	end
+end
+function LostState.resize()
+	this.setButtons()
+end
+function this.setButtons()
+	this.buttons:removeAllButtons()
+	this.buttons:addCenterButton("tryagain", "Try again", love.graphics.getHeight()/2-120*pixelscale)
+	if canPlayLevel(clvl.level+1, true) then
+		this.buttons:addCenterButton("skip", "Skip level", love.graphics.getHeight()/2)
+	end
+	this.buttons:addCenterButton("menu", "Return to menu", love.graphics.getHeight()/2+60*pixelscale)
 end
 StateManager.registerState("lost", LostState)

@@ -17,41 +17,43 @@ local MenuState = {}
 local this = {}
 MenuState.this = this
 
+
+function MenuState.load()
+	if save then
+		this.setButtons()
+	end
+end
+function MenuState.enter()
+	if save then
+		this.setButtons()
+	end
+end
 function MenuState.draw()
 	love.graphics.setColor(255,255,255,255)
 	local logoscale  = math.min(love.graphics.getWidth()/(logo:getWidth()*1.2), love.graphics.getHeight()/(logo:getHeight()*4))
 	local logoY = (love.graphics.getHeight()/2-60*pixelscale)/2-logo:getHeight()*logoscale/2
 	love.graphics.draw(logo, (love.graphics.getWidth()-logo:getWidth()*logoscale)/2, logoY, 0, logoscale, logoscale)
 	
-	if save.crnt == 0 then
-		drawButton(love.graphics.getHeight()/2-60*pixelscale, "Start Game")
-	else
-		--drawButton(love.graphics.getHeight()/3, "Continue Game")
-		drawButton(love.graphics.getHeight()/2-60*pixelscale, "Continue Game")
-	end
-	drawButton(love.graphics.getHeight()/2+60*pixelscale, "Credits")
-	drawButton(love.graphics.getHeight()/2+120*pixelscale, "Quit")
+	this.buttons:draw()
 end
 
 function MenuState.mousepressed(x, y, button)
-	if save.crnt == 0 then
-		if checkButton(nil, love.graphics.getHeight()/2-60*pixelscale) then
-			loadLevel(1)
-		end
-	else
-		--if checkButton(nil, love.graphics.getHeight()/3) then
-		--	loadLevel(math.min(save.crnt+1, #levels))
-		--end
-		if checkButton(nil, love.graphics.getHeight()/2-60*pixelscale) then
-			StateManager.setState("selectworld")
-		end
+	local clickedbutton = this.buttons:getClickedButton(x, y)
+		
+	if clickedbutton == "start" then
+		loadLevel(1)
 	end
-	if checkButton(nil, love.graphics.getHeight()/2+60*pixelscale) then
+
+	if clickedbutton == "continue" then
+		StateManager.setState("selectworld")
+	end
+
+	if clickedbutton == "credits" then
 		creditsScroll = -game.offY -10*pixelscale
 		creditsAutoScroll = 0
 		StateManager.setState("credits")
 	end
-	if checkButton(nil, love.graphics.getHeight()/2+120*pixelscale) then
+	if clickedbutton == "quit" then
 		love.event.quit()
 	end
 
@@ -68,4 +70,22 @@ function MenuState.keypressed(k)
 		love.event.quit()
 	end
 end
+function MenuState.resize()
+	if save then
+		this.setButtons()
+	end
+end
+
+function this.setButtons()
+	this.buttons = this.buttons or ButtonManager.new()
+	this.buttons:removeAllButtons()
+	if save.crnt == 0 then
+		this.buttons:addCenterButton("start", "Start Game", love.graphics.getHeight()/2-60*pixelscale)
+	else
+		this.buttons:addCenterButton("continue", "Continue Game", love.graphics.getHeight()/2-60*pixelscale)
+	end
+	this.buttons:addCenterButton("credits", "Credits", love.graphics.getHeight()/2+60*pixelscale)
+	this.buttons:addCenterButton("quit", "Quit", love.graphics.getHeight()/2+120*pixelscale)
+end
+
 StateManager.registerState("menu", MenuState)
