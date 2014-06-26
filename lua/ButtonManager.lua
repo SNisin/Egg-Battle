@@ -22,17 +22,19 @@ function ButtonManager.new()
 	t.buttons = {}
 	return t
 end
-function ButtonManager:draw()
+function ButtonManager:draw(offY)
 	for i, v in ipairs(self.buttons) do
-	
+		local text, x, y, w, h = v.text, v.x, v.y, v.w, v.h
+		if x == "c" then
+			x = (love.graphics.getWidth()-w)/2
+			y = love.graphics.getHeight()/2 + y
+		end
+		y = y + (offY or 0)
 		love.graphics.setColor(255,255,255,255)
-		rounded_rectangle("fill", v.x, v.y, v.w, v.h, 10*pixelscale)
-		
-		love.graphics.setColor(0,100,0,255)
-		rounded_rectangle("line", v.x, v.y, v.w, v.h, 10*pixelscale)
+		love.graphics.draw(buttonimg, x, y, 0, w/buttonimg:getWidth(), h/buttonimg:getHeight())
 		
 		love.graphics.setColor(0,0,0,255)
-		love.graphics.print(v.text, v.x+(v.w-font:getWidth(v.text))/2, v.y + (v.h * pixelscale - font:getHeight())/2)
+		love.graphics.print(text, x+(w-font:getWidth(text))/2, y + (h - font:getHeight())/2)
 	end
 end
 function ButtonManager:getClickedButton(mx, my)
@@ -50,12 +52,12 @@ function ButtonManager:addButton(name, text, x, y, w)
 	
 	table.insert(self.buttons, {name = name, text = text, x = x, y = y, w = w, h = h})
 end
-function ButtonManager:addCenterButton(name, text, y, w)
+function ButtonManager:addCenterButton(name, text, y, w, h)
 	w = w or 300*pixelscale
-	h = h or 50*pixelscale
-	local x = (love.graphics.getWidth()-w)/2
+	h = h or 75*pixelscale
+	
 
-	table.insert(self.buttons, {name = name, text = text, x = x, y = y, w = w, h = h})
+	table.insert(self.buttons, {name = name, text = text, x = "c", y = y, w = w, h = h})
 end
 function ButtonManager:removeButton(name)
 	for i, v in ipairs(self.buttons) do
@@ -76,6 +78,10 @@ function ButtonManager.check(x, y, w, h, mx, my)
 	x = x or (love.graphics.getWidth()-w)/2
 	mx = mx or love.mouse.getX()
 	my = my or love.mouse.getY()
+	if x == "c" then
+		x = (love.graphics.getWidth()-w)/2
+		y = love.graphics.getHeight()/2 + y
+	end
 	if mx > x and mx < (x+w) and my > y and my < (y+h) then
 		return true
 	else

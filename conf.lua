@@ -19,6 +19,6 @@ function love.conf( t )
 	t.window.icon = "gfx/icon.png"
 	t.console = true
 	t.window.resizable = true
-	t.window.width = 800
-	t.window.height = 600
+	t.window.width = 1080/3
+	t.window.height = 1794/3
 end

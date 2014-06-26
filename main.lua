@@ -15,6 +15,7 @@
 
 ButtonManager = require("lua.ButtonManager")
 StateManager = require("lua.StateManager")
+BackgroundManager = require("lua.BackgroundManager")
 require("Tserial")
 require("lua/buttons")
 require("lua/save")
@@ -48,6 +49,7 @@ function AllState.load()
 	logo = love.graphics.newImage("gfx/logo.png")
 	backimg = love.graphics.newImage("gfx/back.png")
 	barimg = love.graphics.newImage("gfx/bar.png")
+	buttonimg = love.graphics.newImage("gfx/buttons/button1.png")
 	
 	-- Sounds
 	music = love.audio.newSource( "sfx/Sunny-Fields-Gallop.mp3", "stream" )
@@ -77,7 +79,7 @@ function AllState.load()
 	
 	love.graphics.setFont(font)
 	love.graphics.setLineWidth(pixelscale)
-	love.graphics.setBackgroundColor(155, 200, 255)
+	love.graphics.setBackgroundColor(44, 209, 255)
 	
 	local contents
 	if love.filesystem.isFile("levels.lua") then
@@ -104,35 +106,18 @@ function AllState.load()
 	}
 	
 	updateGraphics()
+	BackgroundManager.load()
 end
 function AllState.update( dt )
-	dt = math.min(dt, 0.1)
-	local backscale = math.max(love.graphics.getWidth()/backimg:getWidth(), love.graphics.getHeight()/backimg:getHeight())
-	timet = timet + dt
-	for i, v in ipairs(clouds) do
-		v.x = v.x-v.speed*dt
-		if v.x<0-cloudsimg[v.type]:getWidth()*backscale then
-			table.remove(clouds, i)
-		end
-	end
-	if timet > cloudspawntime+5 then
-		cloudspawntime = timet
-		table.insert(clouds, {x=love.graphics.getWidth(), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#cloudsimg), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
-	end
+	BackgroundManager.update(dt)
 	if game.state then
 		error("game.state changed to " .. game.state)
 	end
 end
 function AllState.draw()
-	love.graphics.setColor(255,255,255,255)
-	local backscale = math.max(love.graphics.getWidth()/backimg:getWidth(), love.graphics.getHeight()/backimg:getHeight())
-	love.graphics.draw(backimg, 0, -(backimg:getHeight()*backscale-love.graphics.getHeight()), 0, backscale, backscale)
-	for i, v in ipairs(clouds) do
-		love.graphics.setColor(255, 255, 255, v.op)
-		love.graphics.draw(cloudsimg[v.type], v.x, v.y, 0, backscale, backscale)
-	end
-	
-
+	BackgroundManager.draw()
+	love.graphics.setColor(255, 255, 255, 255)
+	--love.graphics.print("Size: "..love.graphics.getWidth().."x"..love.graphics.getHeight(), 0, 0)
 end
 function AllState.mousepressed( mx, my, button )
 
@@ -144,6 +129,7 @@ function AllState.mousereleased(x, y, button)
 
 end
 function AllState.resize( w, h )
+	BackgroundManager.resize()
 	updateGraphics()
 end
 
@@ -159,14 +145,6 @@ function updateGraphics()
 	game.eggofX = (game.tilew-eggs[1]:getWidth()*game.scale)/2
 	game.eggofY = (game.tileh-eggs[1]:getHeight()*game.scale)/2
 	
-	local backscale = math.max(love.graphics.getWidth()/backimg:getWidth(), love.graphics.getHeight()/backimg:getHeight())
-	clouds = {}
-	cloudspawntime = -5
-	table.insert(clouds, {x=love.math.random(-500*backscale, love.graphics.getWidth()), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#cloudsimg), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
-	table.insert(clouds, {x=love.math.random(-500*backscale, love.graphics.getWidth()), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#cloudsimg), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
-	table.insert(clouds, {x=love.math.random(-500*backscale, love.graphics.getWidth()), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#cloudsimg), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
-	table.insert(clouds, {x=love.math.random(-500*backscale, love.graphics.getWidth()), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#cloudsimg), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
-	table.insert(clouds, {x=love.math.random(-500*backscale, love.graphics.getWidth()), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#cloudsimg), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
 
 	--table.insert(clouds, {x=500*backscale, y=20*backscale, type=2, speed=36*backscale, op=120})
 	--table.insert(clouds, {x=944*backscale, y=70*backscale, type=2, speed=67*backscale, op=120})

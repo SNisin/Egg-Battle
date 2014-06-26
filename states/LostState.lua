@@ -21,7 +21,12 @@ function LostState.load()
 	this.buttons = ButtonManager.new()
 end
 function LostState.enter()
-	this.setButtons()
+	this.buttons:removeAllButtons()
+	this.buttons:addCenterButton("tryagain", "Try again", -120*pixelscale)
+	if canPlayLevel(clvl.level+1, true) then
+		this.buttons:addCenterButton("skip", "Skip level", 0)
+	end
+	this.buttons:addCenterButton("menu", "Return to menu", 80*pixelscale)
 end
 function LostState.draw()
 	love.graphics.setColor(0,0,0,100)
@@ -46,15 +51,6 @@ function LostState.mousepressed(x, y, button)
 		StateManager.setState("menu")
 	end
 end
-function LostState.resize()
-	this.setButtons()
-end
-function this.setButtons()
-	this.buttons:removeAllButtons()
-	this.buttons:addCenterButton("tryagain", "Try again", love.graphics.getHeight()/2-120*pixelscale)
-	if canPlayLevel(clvl.level+1, true) then
-		this.buttons:addCenterButton("skip", "Skip level", love.graphics.getHeight()/2)
-	end
-	this.buttons:addCenterButton("menu", "Return to menu", love.graphics.getHeight()/2+60*pixelscale)
-end
+
+
 StateManager.registerState("lost", LostState)

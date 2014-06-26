@@ -21,7 +21,10 @@ function WonState.load()
 	this.buttons = ButtonManager.new()
 end
 function WonState.enter()
-	this.setButtons()
+	this.buttons:removeAllButtons()
+	this.buttons:addCenterButton("next", "Next level", -120*pixelscale)
+	this.buttons:addCenterButton("tryagain", "Try again", 0)
+	this.buttons:addCenterButton("menu", "Return to menu", 80*pixelscale)
 end
 function WonState.draw()
 	love.graphics.setColor(0,0,0,100)
@@ -50,13 +53,5 @@ function WonState.mousepressed(x, y, button)
 		StateManager.setState("menu")
 	end
 end
-function WonState.resize()
-	this.setButtons()
-end
-function this.setButtons()
-	this.buttons:removeAllButtons()
-	this.buttons:addCenterButton("next", "Next level", love.graphics.getHeight()/2-120*pixelscale)
-	this.buttons:addCenterButton("tryagain", "Try again", love.graphics.getHeight()/2)
-	this.buttons:addCenterButton("menu", "Return to menu", love.graphics.getHeight()/2+60*pixelscale)
-end
+
 StateManager.registerState("won", WonState)

@@ -28,10 +28,11 @@ function MenuState.enter()
 		this.setButtons()
 	end
 end
+
 function MenuState.draw()
 	love.graphics.setColor(255,255,255,255)
-	local logoscale  = math.min(love.graphics.getWidth()/(logo:getWidth()*1.2), love.graphics.getHeight()/(logo:getHeight()*4))
-	local logoY = (love.graphics.getHeight()/2-60*pixelscale)/2-logo:getHeight()*logoscale/2
+	local logoscale  = math.min(love.graphics.getWidth()/(logo:getWidth()*1.1), love.graphics.getHeight()/(logo:getHeight()*3))
+	local logoY = (love.graphics.getHeight()/2-60*pixelscale)/2-logo:getHeight()*logoscale/2 
 	love.graphics.draw(logo, (love.graphics.getWidth()-logo:getWidth()*logoscale)/2, logoY, 0, logoscale, logoscale)
 	
 	this.buttons:draw()
@@ -66,26 +67,23 @@ end
 function MenuState.keypressed(k)
 	if k == "x" then
 		--StateManager.setState("editor")
+
 	elseif k == "escape" then
 		love.event.quit()
 	end
 end
-function MenuState.resize()
-	if save then
-		this.setButtons()
-	end
-end
+
 
 function this.setButtons()
 	this.buttons = this.buttons or ButtonManager.new()
 	this.buttons:removeAllButtons()
 	if save.crnt == 0 then
-		this.buttons:addCenterButton("start", "Start Game", love.graphics.getHeight()/2-60*pixelscale)
+		this.buttons:addCenterButton("start", "Start Game", -60*pixelscale)
 	else
-		this.buttons:addCenterButton("continue", "Continue Game", love.graphics.getHeight()/2-60*pixelscale)
+		this.buttons:addCenterButton("continue", "Continue Game", -60*pixelscale)
 	end
-	this.buttons:addCenterButton("credits", "Credits", love.graphics.getHeight()/2+60*pixelscale)
-	this.buttons:addCenterButton("quit", "Quit", love.graphics.getHeight()/2+120*pixelscale)
+	this.buttons:addCenterButton("credits", "Credits", 50*pixelscale)
+	this.buttons:addCenterButton("quit", "Quit", 130*pixelscale)
 end
 
 StateManager.registerState("menu", MenuState)
