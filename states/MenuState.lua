@@ -22,20 +22,26 @@ function MenuState.load()
 	if save then
 		this.setButtons()
 	end
+	this.anim = {prog = love.window.getHeight()}
+	this.animt = Tween.new(0.7, this.anim, {prog=0}, "outCubic")
 end
 function MenuState.enter()
 	if save then
 		this.setButtons()
 	end
 end
+function MenuState.update(dt)
+	this.animt:update(dt)
+end
 
 function MenuState.draw()
 	love.graphics.setColor(255,255,255,255)
 	local logoscale  = math.min(love.graphics.getWidth()/(logo:getWidth()*1.1), love.graphics.getHeight()/(logo:getHeight()*3))
 	local logoY = (love.graphics.getHeight()/2-60*pixelscale)/2-logo:getHeight()*logoscale/2 
-	love.graphics.draw(logo, (love.graphics.getWidth()-logo:getWidth()*logoscale)/2, logoY, 0, logoscale, logoscale)
+	love.graphics.draw(logo, (love.graphics.getWidth()-logo:getWidth()*logoscale)/2, logoY + this.anim.prog, 0, logoscale, logoscale)
 	
-	this.buttons:draw()
+	this.buttons:draw(this.anim.prog)
+	BackgroundManager.setOffY(this.anim.prog)
 end
 
 function MenuState.mousepressed(x, y, button)
@@ -67,7 +73,8 @@ end
 function MenuState.keypressed(k)
 	if k == "x" then
 		--StateManager.setState("editor")
-
+	elseif k == "r" then
+		this.animt:reset()
 	elseif k == "escape" then
 		love.event.quit()
 	end
