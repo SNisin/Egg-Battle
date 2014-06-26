@@ -62,7 +62,7 @@ function GameState.update(dt)
 		
 			StateManager.setState("editor")
 		else
-			StateManager.setState("lost")
+			StateManager.addState("lost")
 		end
 	end
 end

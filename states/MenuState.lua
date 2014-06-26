@@ -22,13 +22,15 @@ function MenuState.load()
 	if save then
 		this.setButtons()
 	end
-	this.anim = {prog = love.window.getHeight()}
-	this.animt = Tween.new(0.7, this.anim, {prog=0}, "outCubic")
+	
 end
-function MenuState.enter()
+function MenuState.enter(notMoveBack)
 	if save then
 		this.setButtons()
 	end
+	this.notMoveBack = notMoveBack or false
+	this.anim = {prog = love.window.getHeight()}
+	this.animt = Tween.new(0.7, this.anim, {prog=0}, "outCubic")
 end
 function MenuState.update(dt)
 	this.animt:update(dt)
@@ -41,7 +43,9 @@ function MenuState.draw()
 	love.graphics.draw(logo, (love.graphics.getWidth()-logo:getWidth()*logoscale)/2, logoY + this.anim.prog, 0, logoscale, logoscale)
 	
 	this.buttons:draw(this.anim.prog)
-	BackgroundManager.setOffY(this.anim.prog)
+	if not this.notMoveBack then
+		BackgroundManager.setOffY(this.anim.prog)
+	end
 end
 
 function MenuState.mousepressed(x, y, button)
