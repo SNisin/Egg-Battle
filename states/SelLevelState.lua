@@ -23,6 +23,9 @@ local BUTTON_HEIGHT = 0
 function SelLevelState.load()
 	BUTTON_WIDTH = 50*pixelscale
 	BUTTON_HEIGHT = 50*pixelscale
+	this.buttonimg = love.graphics.newImage("gfx/buttons/levelbutton.png")
+	this.finishedimg = love.graphics.newImage("gfx/buttons/levelfinished.png")
+	this.notavailableimg = love.graphics.newImage("gfx/buttons/levelnotavailable.png")
 	
 	levelClickedOn = 0
 	levelClickedY = 0
@@ -108,19 +111,19 @@ function SelLevelState.mousereleased(x, y, button)
 	end
 end
 function this.drawLevelButton(level, x, y)
+	local drawimg
 	if save.worlds and save.worlds[game.worldselected] and save.worlds[game.worldselected][level] then
-		love.graphics.setColor(150,255,150,255)
+		drawimg = this.finishedimg
 
 	elseif canPlayLevel(level) then
-		love.graphics.setColor(255,255,255,255)
+		drawimg = this.buttonimg
 		
 	else
-		love.graphics.setColor(150,150,150,255)
+		drawimg = this.notavailableimg
 
 	end
-	rounded_rectangle("fill", x, y, BUTTON_WIDTH, BUTTON_HEIGHT, 10*pixelscale)
-	love.graphics.setColor(0,0,0,255)
-	rounded_rectangle("line", x, y, BUTTON_WIDTH, BUTTON_HEIGHT, 10*pixelscale)
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.draw(drawimg, x, y, 0, BUTTON_WIDTH/drawimg:getWidth(), BUTTON_HEIGHT/drawimg:getHeight())
 	
 	
 
