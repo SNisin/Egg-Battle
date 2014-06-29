@@ -176,7 +176,7 @@ function CreditsState.draw()
 
 	love.graphics.setColor(255,255,255,150)
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
-	drawButton(0, "< Back", 0, font:getWidth("< Back")+20*pixelscale)
+	ButtonManager.drawBackButton()
 end
 
 function CreditsState.mousepressed(x, y, button)
@@ -194,7 +194,7 @@ function CreditsState.mousepressed(x, y, button)
 				end
 			end
 		else
-			if checkButton(0, 0, font:getWidth("< Back")+20*pixelscale, game.offY) then
+			if ButtonManager.checkBackButton() then
 				creditsClickedOn = 0
 				StateManager.setState("menu")
 			end

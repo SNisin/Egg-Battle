@@ -24,13 +24,17 @@ function MenuState.load()
 	end
 	
 end
-function MenuState.enter(notMoveBack)
+function MenuState.enter()
 	if save then
 		this.setButtons()
 	end
-	this.notMoveBack = notMoveBack or false
 	this.anim = {prog = love.window.getHeight()}
 	this.animt = Tween.new(0.7, this.anim, {prog=0}, "outCubic")
+	if this.notFirstTime then
+		this.notMoveBack = true
+	else
+		this.notFirstTime = true
+	end
 end
 function MenuState.update(dt)
 	this.animt:update(dt)
@@ -76,7 +80,7 @@ end
 
 function MenuState.keypressed(k)
 	if k == "x" then
-		--StateManager.setState("editor")
+		StateManager.setState("editor")
 	elseif k == "r" then
 		this.animt:reset()
 	elseif k == "escape" then

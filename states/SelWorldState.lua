@@ -19,10 +19,14 @@ SelWorldState.this = this
 
 local BUTTON_WIDTH = 0
 local BUTTON_HEIGHT = 0
+local BUTTON_BORDER = 0
 
 function SelWorldState.load()
-	BUTTON_WIDTH = 125*pixelscale
-	BUTTON_HEIGHT = 125*pixelscale
+	BUTTON_WIDTH = 130*pixelscale
+	BUTTON_HEIGHT = 130*pixelscale
+	BUTTON_BORDER = 10*pixelscale
+	this.buttonimg = love.graphics.newImage("gfx/buttons/worldbutton.png")
+	this.finishedimg = love.graphics.newImage("gfx/buttons/worldfinished.png")
 	
 	worldClickedOn = 0
 	worldClickedY = 0
@@ -58,8 +62,8 @@ function SelWorldState.draw()
 	end
 	love.graphics.setColor(255,255,255,150)
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
-	drawButton(0, "< Back", 0, font:getWidth("< Back")+20*pixelscale)
-	
+	ButtonManager.drawBackButton()
+
 	local minoff, maxoff = this.getWorldMinMax()
 	if maxoff > minoff then
 		love.graphics.setColor(0,0,0,150)
@@ -77,14 +81,14 @@ function SelWorldState.mousepressed(x, y, button)
 			for i, v in ipairs(worlds) do
 					if i<=math.floor(#levels/15) then
 					local numinrow, offs = this.getWorldVars()
-					if checkButton((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-worldScroll, BUTTON_WIDTH, BUTTON_HEIGHT) then
+					if ButtonManager.check((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-worldScroll, BUTTON_WIDTH, BUTTON_HEIGHT) then
 						worldClickedOn = i
 						worldNotSelect = false
 					end
 				end
 			end
 		else
-			if checkButton(0, 0, font:getWidth("< Back")+20*pixelscale, game.offY) then
+			if ButtonManager.checkBackButton(mx, my) then
 				StateManager.setState("menu")
 			end
 		end
@@ -122,18 +126,17 @@ function this.drawWorldButton(world, x, y)
 	else
 		worldprog = 0
 	end
+	local drawimg
 	if worldprog >= 15 then
-		--love.graphics.setColor(220,220,220,255)
-		love.graphics.setColor(150,255,150,255)
+		drawimg = this.finishedimg
 	else
-		love.graphics.setColor(255,255,255,255)
+		drawimg = this.buttonimg
 	end
-	rounded_rectangle("fill", x, y, BUTTON_WIDTH, BUTTON_HEIGHT, 10*pixelscale)
-	love.graphics.setColor(0,0,0,255)
-	rounded_rectangle("line", x, y, BUTTON_WIDTH, BUTTON_HEIGHT, 10*pixelscale)
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.draw(drawimg, x, y, 0, BUTTON_WIDTH/drawimg:getWidth(), BUTTON_HEIGHT/drawimg:getHeight())
 
 	love.graphics.setColor(0,160,160,255)
-	love.graphics.printf(world..". "..worlds[world], x, y+10, BUTTON_WIDTH, "center")
+	love.graphics.printf(world..". "..worlds[world], x+BUTTON_BORDER, y+10, BUTTON_WIDTH-BUTTON_BORDER*2, "center")
 	
 	love.graphics.setColor(0,0,0,255)
 	love.graphics.printf(worldprog.."/15", x, y+BUTTON_HEIGHT-10-font:getHeight(), BUTTON_WIDTH, "center")

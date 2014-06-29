@@ -32,6 +32,7 @@ require("states.CreditsState")
 
 local AllState = {}
 function AllState.load()
+	io.stdout:setvbuf("no")
 	love.filesystem.setIdentity("EggBattle")
 	
 	-- Images
@@ -108,6 +109,7 @@ function AllState.load()
 	
 	updateGraphics()
 	BackgroundManager.load()
+
 end
 function AllState.update( dt )
 	BackgroundManager.update(dt)

@@ -59,7 +59,7 @@ function WonState.mousepressed(x, y, button)
 		this.animBack(function() loadLevel(clvl.level) end)
 	end
 	if clickedbutton == "menu" then
-		this.animBack("menu", true)
+		this.animBack("menu")
 	end
 end
 function this.animBack(func, x1, x2)

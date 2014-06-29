@@ -56,7 +56,7 @@ function SelLevelState.draw()
 	end
 	love.graphics.setColor(255,255,255,150)
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
-	drawButton(0, "< Back", 0, font:getWidth("< Back")+20*pixelscale)
+	ButtonManager.drawBackButton()
 	
 	local minoff, maxoff = this.getLevelMinMax()
 	if maxoff > minoff then
@@ -74,13 +74,13 @@ function SelLevelState.mousepressed(x, y, button)
 		if y > game.offY then
 		for i = 1, 15 do
 			local numinrow, offs = this.getLevelVars()
-			if checkButton((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-levelScroll, BUTTON_WIDTH, BUTTON_HEIGHT) then
+			if ButtonManager.check((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-levelScroll, BUTTON_WIDTH, BUTTON_HEIGHT) then
 				levelClickedOn = i
 				levelNotSelect = false
 			end
 		end
 		else
-			if checkButton(0, 0, font:getWidth("< Back")+20*pixelscale, game.offY) then
+			if ButtonManager.checkBackButton() then
 				StateManager.setState("selectworld")
 			end
 		end

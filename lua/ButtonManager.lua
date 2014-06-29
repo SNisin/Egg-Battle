@@ -88,5 +88,20 @@ function ButtonManager.check(x, y, w, h, mx, my)
 		return false
 	end
 end
+function ButtonManager.drawBackButton(x, y)
+	x = x or 0
+	y = y or 0
+	local w = 100*pixelscale
+	local h = 50*pixelscale
+	love.graphics.setColor(255,255,255)
+	love.graphics.printf("< Back", x, y+(h-font:getHeight())/2, w, "center")
+end
+function ButtonManager.checkBackButton(mx, my, x, y)
+	x = x or 0
+	y = y or 0
+	local w = 100*pixelscale
+	local h = 50*pixelscale
+	return ButtonManager.check(x, y, w, h, mx, my)
+end
 
 return ButtonManager
