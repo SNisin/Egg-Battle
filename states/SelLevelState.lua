@@ -126,8 +126,7 @@ function this.drawLevelButton(level, x, y)
 	love.graphics.draw(drawimg, x, y, 0, BUTTON_WIDTH/drawimg:getWidth(), BUTTON_HEIGHT/drawimg:getHeight())
 	
 	
-
-	love.graphics.setColor(0,160,160,255)
+	love.graphics.setColor(255,255,255,255)
 	love.graphics.printf(level, x, (BUTTON_HEIGHT-font:getHeight())/2+y, BUTTON_WIDTH, "center")
 	
 	love.graphics.setColor(0,0,0,255)

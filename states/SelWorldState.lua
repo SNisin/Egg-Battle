@@ -22,12 +22,11 @@ local BUTTON_HEIGHT = 0
 local BUTTON_BORDER = 0
 
 function SelWorldState.load()
+
 	BUTTON_WIDTH = 130*pixelscale
 	BUTTON_HEIGHT = 130*pixelscale
 	BUTTON_BORDER = 10*pixelscale
 	this.buttonimg = love.graphics.newImage("gfx/buttons/worldbutton.png")
-	this.finishedimg = love.graphics.newImage("gfx/buttons/worldfinished.png")
-	
 	worldClickedOn = 0
 	worldClickedY = 0
 	worldClickedScroll = -game.offY
@@ -126,19 +125,18 @@ function this.drawWorldButton(world, x, y)
 	else
 		worldprog = 0
 	end
-	local drawimg
-	if worldprog >= 15 then
-		drawimg = this.finishedimg
-	else
-		drawimg = this.buttonimg
-	end
+	local drawimg = this.buttonimg
 	love.graphics.setColor(255,255,255,255)
 	love.graphics.draw(drawimg, x, y, 0, BUTTON_WIDTH/drawimg:getWidth(), BUTTON_HEIGHT/drawimg:getHeight())
 
 	love.graphics.setColor(0,160,160,255)
 	love.graphics.printf(world..". "..worlds[world], x+BUTTON_BORDER, y+10, BUTTON_WIDTH-BUTTON_BORDER*2, "center")
 	
-	love.graphics.setColor(0,0,0,255)
+	if worldprog >= 15 then
+		love.graphics.setColor(0,150,0,255)
+	else
+		love.graphics.setColor(0,0,0,255)
+	end
 	love.graphics.printf(worldprog.."/15", x, y+BUTTON_HEIGHT-10-font:getHeight(), BUTTON_WIDTH, "center")
 end
 
