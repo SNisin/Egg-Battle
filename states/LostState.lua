@@ -57,7 +57,7 @@ function LostState.mousepressed(x, y, button)
 		this.animBack(function() loadLevel(clvl.level+1) end)
 	end
 	if clickedbutton == "menu" then
-		this.animBack("menu")
+		this.animBack("selectlevel")
 	end
 end
 function this.animBack(func, x1, x2)

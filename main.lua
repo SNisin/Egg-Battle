@@ -72,6 +72,7 @@ function AllState.load()
 	font = love.graphics.newFont("gfx/font.ttf",math.floor(20*pixelscale))
 	game = {
 	}
+	game.worldselected = 1
 	worlds = {
 		"Boiled egg",
 		"Coddled egg",
