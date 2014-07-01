@@ -22,6 +22,8 @@ function MenuState.load()
 	if save then
 		this.setButtons()
 	end
+	this.muteoff = love.graphics.newImage("gfx/muteoff.png")
+	this.muteon = love.graphics.newImage("gfx/muteon.png")
 	
 end
 function MenuState.enter()
@@ -50,6 +52,17 @@ function MenuState.draw()
 	if not this.notMoveBack then
 		BackgroundManager.setOffY(this.anim.prog)
 	end
+
+	local mutewidth, muteheight = 48, 48
+	local muteborder = 10
+	local muteimage
+	if music:isPlaying() then
+		muteimage = this.muteoff
+	else
+		muteimage = this.muteon
+	end
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.draw(muteimage, love.graphics.getWidth()-mutewidth-muteborder, muteborder, 0, mutewidth/muteimage:getWidth(), muteheight/muteimage:getHeight())
 end
 
 function MenuState.mousepressed(x, y, button)
@@ -72,7 +85,19 @@ function MenuState.mousepressed(x, y, button)
 		love.event.quit()
 	end
 
-	
+	local mutewidth, muteheight = 48, 48
+	local muteborder = 10
+	if ButtonManager.check(love.graphics.getWidth()-mutewidth-muteborder, muteborder, mutewidth, muteheight, x, y) then
+		if music:isPlaying() then
+			music:pause()
+			save.mute = true
+		else
+			music:play()
+			save.mute = false
+		end
+		save_game()
+	end
+
 	if y > love.graphics.getHeight()-10 then
 		--StateManager.setState("editor")
 	end

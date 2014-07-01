@@ -22,13 +22,13 @@ function load_game()
 			worlds = {
 				--[1] = {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true}
 			},
-			crnt = 0
+			crnt = 0,
+			mute = false
 		}
 		save_game()
 	end
 end
 function save_game()
-	print("saved!")
 	local content = Tserial.pack(save)
 	love.filesystem.write("save.lua", content)
 end

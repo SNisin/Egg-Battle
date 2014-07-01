@@ -34,6 +34,8 @@ local AllState = {}
 function AllState.load()
 	io.stdout:setvbuf("no")
 	love.filesystem.setIdentity("EggBattle")
+
+	load_game()
 	
 	-- Images
 	eggs = {
@@ -57,8 +59,10 @@ function AllState.load()
 	music = love.audio.newSource( "sfx/Sunny-Fields-Gallop.mp3", "stream" )
 	music:setLooping( true )
 	music:setVolume( 0.5 )
-	music:play()
-	
+	if not save.mute then
+		music:play()
+	end
+
 	hit = love.audio.newSource( "sfx/Hit.wav", "static" )
 	
 	-- Variables
@@ -91,7 +95,7 @@ function AllState.load()
 	end
 	levels = Tserial.unpack(contents)
 	
-	load_game()
+	
 	
 	clvl = {
 		world={
