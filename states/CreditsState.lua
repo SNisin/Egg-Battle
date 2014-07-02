@@ -59,39 +59,22 @@ function CreditsState.load()
 	creditlinks = {}
 	creditHeight = 0
 	
-	creditsAutoScroll = 0
 	
-	creditsClickedOn = 0
-	creditsClickedY = 0
-	creditsClickedScroll = -game.offY
-	creditsScroll = -game.offY -10*pixelscale
-	creditsNotSelect = true
 	if OS ~= "Android" then
 		handcursor = love.mouse.getSystemCursor( "hand" )
 		curcursor = ""
 	end
 end
+function CreditsState.enter()
+	this.scroll = ScrollManager.new({
+		autoscrollspeed = 20,
+		autoscrolltime = 3,
+		offTop = game.offY,
+		clickcallback = this.mouseclicked
+		})
+end
 function CreditsState.update(dt)
-	if creditsAutoScroll <= 0 then
-		creditsScroll = creditsScroll+20*dt*pixelscale
-	else
-		creditsAutoScroll = creditsAutoScroll -dt
-	end
-	if love.mouse.isDown("l") and creditsClickedOn ~= 0 then
-		creditsScroll = creditsClickedScroll + (creditsClickedY-love.mouse.getY())
-	end
-	
-	local minoff = -game.offY -10*pixelscale
-	local maxoff = creditHeight - love.graphics.getHeight() +10*pixelscale
-	if creditsScroll > maxoff then
-		creditsScroll = maxoff
-	end
-	if creditsScroll < minoff then
-		creditsScroll = minoff
-	end
-	if math.abs(creditsClickedY-love.mouse.getY()) > 30*pixelscale then
-		creditsNotSelect = true
-	end
+	this.scroll:update(dt)
 	if OS ~= "Android" then
 		local cursorchanged = false
 		if love.mouse.getY() > game.offY then
@@ -119,7 +102,7 @@ function CreditsState.draw()
 	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 	--love.graphics.printf(CREDITSTEXT, 10*pixelscale, game.offY+10*pixelscale, love.graphics.getWidth()-20*pixelscale)
 	
-	local cposy = -creditsScroll
+	local cposy = -this.scroll.scrollY
 	local startcposy = cposy
 	creditlinks = {}
 	for i, v in ipairs(creditLines) do
@@ -165,60 +148,36 @@ function CreditsState.draw()
 	creditHeight = cposy - startcposy
 	
 	love.graphics.setFont(font)
-	
-	local minoff = -game.offY -10*pixelscale
-	local maxoff = creditHeight - love.graphics.getHeight() +10*pixelscale
-	if maxoff > minoff then
-		love.graphics.setColor(0,0,0,150)
-		rounded_rectangle("fill", love.graphics.getWidth()-15*pixelscale, math.floor((creditsScroll-minoff)/(maxoff-minoff)*(love.graphics.getHeight()-150*pixelscale+minoff*2)-minoff), 5*pixelscale, 150*pixelscale, 2*pixelscale)
-	end
+	this.scroll:drawScrollBar()
+	this.scroll:setContentHeight(creditHeight)
 	
 
 	love.graphics.setColor(255,255,255,150)
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
 	ButtonManager.drawBackButton()
 end
-
 function CreditsState.mousepressed(x, y, button)
-	creditsAutoScroll = 3
-	if button == "l" then
-		creditsClickedY = y
-		creditsClickedScroll = creditsScroll
-		creditsClickedOn = -1
-		creditsNotSelect = true
-		if y > game.offY then
-			for i, v in ipairs(creditlinks) do
-				if checkButton((love.graphics.getWidth()-v.width)/2, v.y, v.width, v.height) then
-					creditsNotSelect = false
-					creditsClickedOn = v.link
+	this.scroll:mousepressed(x, y, button)
+end
+function this.mouseclicked(x, y, button)
+	if y > game.offY then
+		for i, v in ipairs(creditlinks) do
+			if checkButton((love.graphics.getWidth()-v.width)/2, v.y, v.width, v.height) then
+				if love.system and love.system.openURL then
+					love.system.openURL(v.link)
+					break
 				end
 			end
-		else
-			if ButtonManager.checkBackButton() then
-				creditsClickedOn = 0
-				StateManager.setState("menu")
-			end
 		end
-	elseif button == "wu" then
-		creditsScroll = creditsScroll-50*pixelscale
-		
-	elseif button == "wd" then
-		creditsScroll = creditsScroll+50*pixelscale
+	else
+		if ButtonManager.checkBackButton(x, y) then
+			creditsClickedOn = 0
+			StateManager.setState("menu")
+		end
 	end
 end
 function CreditsState.mousereleased(x, y, button)
-	
-	if button == "l" then
-		if creditsClickedOn ~= 0 then
-			if not creditsNotSelect and type(creditsClickedOn) == "string" then
-				if love.system and love.system.openURL then
-					love.system.openURL(creditsClickedOn)
-				end
-			end
-			creditsClickedOn = 0
-			creditsAutoScroll = 3
-		end
-	end
+	this.scroll:mousereleased(x, y, button)
 end
 function CreditsState.keypressed(k)
 	if k == "escape" then

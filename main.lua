@@ -16,6 +16,7 @@
 ButtonManager = require("lua.ButtonManager")
 StateManager = require("lua.StateManager")
 BackgroundManager = require("lua.BackgroundManager")
+ScrollManager = require("lua.ScrollManager")
 Tween = require("libs.tween")
 require("libs.Tserial")
 require("lua.buttons")
@@ -68,7 +69,7 @@ function AllState.load()
 	-- Variables
 	OS = love.system.getOS()
 	timet = 0
-	pixelscale = love.window.getPixelScale()
+	pixelscale = 2--love.window.getPixelScale()
 	font = love.graphics.newFont("gfx/font.ttf",math.floor(20*pixelscale))
 	game = {
 	}

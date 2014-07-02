@@ -27,75 +27,56 @@ function SelWorldState.load()
 	BUTTON_HEIGHT = 130*pixelscale
 	BUTTON_BORDER = 10*pixelscale
 	this.buttonimg = love.graphics.newImage("gfx/buttons/worldbutton.png")
-	worldClickedOn = 0
-	worldClickedY = 0
-	worldClickedScroll = -game.offY
-	worldScroll = -game.offY
-	worldNotSelect = true
+end
+function SelWorldState.enter()
+	local numinrow, offs = this.getWorldVars()
+	local rows = math.floor((math.floor(#levels/15)-1)/numinrow)+1
+	local contentheight = rows*(offs+BUTTON_HEIGHT)+offs
+
+	this.scroll = ScrollManager.new({
+		offTop = game.offY,
+		clickcallback = this.mouseclicked,
+		contentHeight = contentheight
+		})
 end
 
 function SelWorldState.update(dt)
-	if love.mouse.isDown("l") and worldClickedOn ~= 0 then
-		worldScroll = worldClickedScroll + (worldClickedY-love.mouse.getY())
-	end
-	
-	local minoff, maxoff = this.getWorldMinMax()
-	
-	if worldScroll > maxoff then
-		worldScroll = maxoff
-	end
-	if worldScroll < minoff then
-		worldScroll = minoff
-	end
-	if math.abs(worldClickedY-love.mouse.getY()) > 30*pixelscale then
-		worldNotSelect = true
-	end
+	this.scroll:update(dt)
 end
 
 function SelWorldState.draw()
 	local numinrow, offs = this.getWorldVars()
 	for i, v in ipairs(worlds) do
 		if i<=math.floor(#levels/15) then
-			this.drawWorldButton(i, (i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-worldScroll)
+			this.drawWorldButton(i, (i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY)
 		end
 	end
 	love.graphics.setColor(255,255,255,150)
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
 	ButtonManager.drawBackButton()
 
-	local minoff, maxoff = this.getWorldMinMax()
-	if maxoff > minoff then
-		love.graphics.setColor(0,0,0,150)
-		rounded_rectangle("fill", love.graphics.getWidth()-15*pixelscale, math.floor((worldScroll+game.offY)/(maxoff+game.offY)*(love.graphics.getHeight()-150*pixelscale-game.offY*2)+game.offY), 5*pixelscale, 150*pixelscale, 2*pixelscale)
-	end
+	this.scroll:drawScrollBar()
 end
 
 function SelWorldState.mousepressed(x, y, button)
-	if button == "l" then
-		worldClickedY = y
-		worldClickedScroll = worldScroll
-		worldClickedOn = -1
-		worldNotSelect = true
-		if y > game.offY then
-			for i, v in ipairs(worlds) do
-					if i<=math.floor(#levels/15) then
-					local numinrow, offs = this.getWorldVars()
-					if ButtonManager.check((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-worldScroll, BUTTON_WIDTH, BUTTON_HEIGHT) then
-						worldClickedOn = i
-						worldNotSelect = false
-					end
+	this.scroll:mousepressed(x, y, button)
+end
+function this.mouseclicked(x, y, button)
+	if y > game.offY then
+		for i, v in ipairs(worlds) do
+				if i<=math.floor(#levels/15) then
+				local numinrow, offs = this.getWorldVars()
+				if ButtonManager.check((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY, BUTTON_WIDTH, BUTTON_HEIGHT) then
+					print("world "..i)
+					game.worldselected = i
+					StateManager.setState("selectlevel")
 				end
 			end
-		else
-			if ButtonManager.checkBackButton(mx, my) then
-				StateManager.setState("menu")
-			end
 		end
-	elseif button == "wu" then
-		worldScroll = worldScroll-50*pixelscale
-		
-	elseif button == "wd" then
-		worldScroll = worldScroll+50*pixelscale
+	else
+		if ButtonManager.checkBackButton(mx, my) then
+			StateManager.setState("menu")
+		end
 	end
 end
 function SelWorldState.keypressed(k)
@@ -104,14 +85,13 @@ function SelWorldState.keypressed(k)
 	end
 end
 function SelWorldState.mousereleased(x, y, button)
-	if button == "l" then
-		if not worldNotSelect and worlds[worldClickedOn] then
-			print("world "..worldClickedOn)
-			game.worldselected = worldClickedOn
-			StateManager.setState("selectlevel")
-		end
-		worldClickedOn = 0
-	end
+	this.scroll:mousereleased(x, y, button)
+end
+function SelWorldState.resize(width, height)
+	local numinrow, offs = this.getWorldVars()
+	local rows = math.floor((math.floor(#levels/15)-1)/numinrow)+1
+	local contentheight = rows*(offs+BUTTON_HEIGHT)+offs
+	this.scroll:setContentHeight(contentheight)
 end
 function this.drawWorldButton(world, x, y)
 	
@@ -147,12 +127,6 @@ function this.getWorldVars()
 	--end
 	local offs = (love.graphics.getWidth()/numinrow-BUTTON_WIDTH)/2
 	return numinrow, offs
-end
-
-function this.getWorldMinMax()
-	local numinrow, offs = this.getWorldVars()
-	local rows = math.floor((math.floor(#levels/15)-1)/numinrow)+1
-	return -game.offY, rows*(offs+BUTTON_HEIGHT)+offs - love.graphics.getHeight()
 end
 
 StateManager.registerState("selectworld", SelWorldState)

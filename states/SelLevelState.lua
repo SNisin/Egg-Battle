@@ -26,72 +26,53 @@ function SelLevelState.load()
 	this.buttonimg = love.graphics.newImage("gfx/buttons/levelbutton.png")
 	this.finishedimg = love.graphics.newImage("gfx/buttons/levelfinished.png")
 	this.notavailableimg = love.graphics.newImage("gfx/buttons/levelnotavailable.png")
-	
-	levelClickedOn = 0
-	levelClickedY = 0
-	levelClickedScroll = -game.offY
-	levelScroll = -game.offY
-	levelNotSelect = true
-end
 
+end
+function SelLevelState.enter()
+	local numinrow, offs = this.getLevelVars()
+	local rows = math.floor((14)/numinrow)+1
+	local contentheight = rows*(offs+BUTTON_HEIGHT)+offs
+
+	this.scroll = ScrollManager.new({
+		offTop = game.offY,
+		clickcallback = this.mouseclicked,
+		contentHeight = contentheight
+		})
+end
 function SelLevelState.update(dt)
-	if love.mouse.isDown("l") and levelClickedOn ~= 0 then
-		levelScroll = levelClickedScroll + (levelClickedY-love.mouse.getY())
-	end
-	
-	local minoff, maxoff = this.getLevelMinMax()
-	
-	if levelScroll > maxoff then
-		levelScroll = maxoff
-	end
-	if levelScroll < minoff then
-		levelScroll = minoff
-	end
-	if math.abs(levelClickedY-love.mouse.getY()) > 30*pixelscale then
-		levelNotSelect = true
-	end
+	this.scroll:update(dt)
 end
 
 function SelLevelState.draw()
 	local numinrow, offs = this.getLevelVars()
 	for i = 1, 15 do
-		this.drawLevelButton(i, (i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-levelScroll)
+		this.drawLevelButton(i, (i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY)
 	end
 	love.graphics.setColor(255,255,255,150)
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
 	ButtonManager.drawBackButton()
 	
-	local minoff, maxoff = this.getLevelMinMax()
-	if maxoff > minoff then
-		love.graphics.setColor(0,0,0,150)
-		rounded_rectangle("fill", love.graphics.getWidth()-15*pixelscale, math.floor((levelScroll+game.offY)/(maxoff+game.offY)*(love.graphics.getHeight()-150*pixelscale-game.offY*2)+game.offY), 5*pixelscale, 150*pixelscale, 2*pixelscale)
-	end
+	this.scroll:drawScrollBar()
 end
 
 function SelLevelState.mousepressed(x, y, button)
-	if button == "l" then
-		levelClickedY = y
-		levelClickedScroll = levelScroll
-		levelClickedOn = -1
-		levelNotSelect = true
-		if y > game.offY then
+	this.scroll:mousepressed(x, y, button)
+end
+function this.mouseclicked(x, y, button)
+	if y > game.offY then
 		for i = 1, 15 do
 			local numinrow, offs = this.getLevelVars()
-			if ButtonManager.check((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-levelScroll, BUTTON_WIDTH, BUTTON_HEIGHT) then
-				levelClickedOn = i
-				levelNotSelect = false
+			if ButtonManager.check((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY, BUTTON_WIDTH, BUTTON_HEIGHT) then
+				print("level "..i)
+				if canPlayLevel(i) then
+					loadLevel(15*(game.worldselected-1)+i)
+				end
 			end
 		end
-		else
-			if ButtonManager.checkBackButton() then
-				StateManager.setState("selectworld")
-			end
+	else
+		if ButtonManager.checkBackButton() then
+			StateManager.setState("selectworld")
 		end
-	elseif button == "wu" then
-		levelScroll = levelScroll-50*pixelscale
-		
-	elseif button == "wd" then
-		levelScroll = levelScroll+50*pixelscale
 	end
 end
 function SelLevelState.keypressed(k)
@@ -100,15 +81,13 @@ function SelLevelState.keypressed(k)
 	end
 end
 function SelLevelState.mousereleased(x, y, button)
-	if button == "l" then
-		if not levelNotSelect then
-			print("level "..levelClickedOn)
-			if canPlayLevel(levelClickedOn) then
-				loadLevel(15*(game.worldselected-1)+levelClickedOn)
-			end
-		end
-		levelClickedOn = 0
-	end
+	this.scroll:mousereleased(x, y, button)
+end
+function SelLevelState.resize( width, height )
+	local numinrow, offs = this.getLevelVars()
+	local rows = math.floor((14)/numinrow)+1
+	local contentheight = rows*(offs+BUTTON_HEIGHT)+offs
+	this.scroll:setContentHeight(contentheight)
 end
 function this.drawLevelButton(level, x, y)
 	local drawimg
@@ -136,12 +115,6 @@ function this.getLevelVars()
 	local numinrow = math.max(math.floor(love.graphics.getWidth()/(BUTTON_WIDTH*1.5)),1)
 	local offs = (love.graphics.getWidth()/numinrow-BUTTON_WIDTH)/2
 	return numinrow, offs
-end
-
-function this.getLevelMinMax()
-	local numinrow, offs = this.getLevelVars()
-	local rows = math.floor((14)/numinrow)+1
-	return -game.offY, rows*(offs+BUTTON_HEIGHT)+offs - love.graphics.getHeight()
 end
 
 
