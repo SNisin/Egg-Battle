@@ -69,7 +69,7 @@ function AllState.load()
 	-- Variables
 	OS = love.system.getOS()
 	timet = 0
-	pixelscale = 2--love.window.getPixelScale()
+	pixelscale = love.window.getPixelScale()
 	font = love.graphics.newFont("gfx/font.ttf",math.floor(20*pixelscale))
 	game = {
 	}
