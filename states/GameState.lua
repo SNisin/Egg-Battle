@@ -16,7 +16,9 @@
 local GameState = {}
 local this = {}
 GameState.this = this
-
+function GameState.load()
+	this.resetbutton = love.graphics.newImage("gfx/reset.png")
+end
 function GameState.update(dt)
 	for i,v in ipairs(clvl.projectiles) do
 		if v.dir == "left" then
@@ -86,18 +88,24 @@ function GameState.draw()
 	end
 	love.graphics.setColor(255,255,255,150)
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
-	love.graphics.setColor(0,0,0,255)
-	love.graphics.print("Level: "..clvl.level, math.floor(20*pixelscale)+math.floor(pixelscale), (game.offY-font:getHeight())/2+1)
-	love.graphics.setColor(255,255,255,255)
-	love.graphics.print("Level: "..clvl.level, math.floor(20*pixelscale), (game.offY-font:getHeight())/2)
 	
 	love.graphics.setColor(0,0,0,255)
-	love.graphics.print("Moves left: "..clvl.taps, math.floor(60*pixelscale)+math.floor(pixelscale) + font:getWidth("Level: "..clvl.level), (game.offY-font:getHeight())/2+1)
+	love.graphics.printf("Moves left: "..clvl.taps, 1, (game.offY-font:getHeight())/2+1, love.graphics.getWidth(), "center")
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.print("Moves left: "..clvl.taps, math.floor(60*pixelscale) + font:getWidth("Level: "..clvl.level), (game.offY-font:getHeight())/2)
+	love.graphics.printf("Moves left: "..clvl.taps, 0, (game.offY-font:getHeight())/2, love.graphics.getWidth(), "center")
+
+	local resetwidth, resetheight = 32*pixelscale, 32*pixelscale
+	local offset = (game.offY-resetheight)/2
+	love.graphics.draw(this.resetbutton, love.graphics.getWidth()-resetwidth-offset, offset, 0, resetwidth/this.resetbutton:getWidth(), resetheight/this.resetbutton:getHeight())
 end
 
 function GameState.mousepressed(x, y, button)
+	local resetwidth, resetheight = 32*pixelscale, 32*pixelscale
+	local offset = (game.offY-resetheight)/2
+	if ButtonManager.check(love.graphics.getWidth()-resetwidth-offset, offset, resetwidth, resetheight) then
+		loadLevel(clvl.level)
+	end
+
 	if clvl.taps>0 and this.hitegg(x, y-game.offY) then
 		clvl.taps = clvl.taps - 1
 	end
