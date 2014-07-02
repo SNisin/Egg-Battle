@@ -53,8 +53,8 @@ function MenuState.draw()
 		BackgroundManager.setOffY(this.anim.prog)
 	end
 
-	local mutewidth, muteheight = 48, 48
-	local muteborder = 10
+	local mutewidth, muteheight = 48*pixelscale, 48*pixelscale
+	local muteborder = 10*pixelscale
 	local muteimage
 	if music:isPlaying() then
 		muteimage = this.muteoff
@@ -85,8 +85,8 @@ function MenuState.mousepressed(x, y, button)
 		love.event.quit()
 	end
 
-	local mutewidth, muteheight = 48, 48
-	local muteborder = 10
+	local mutewidth, muteheight = 48*pixelscale, 48*pixelscale
+	local muteborder = 10*pixelscale
 	if ButtonManager.check(love.graphics.getWidth()-mutewidth-muteborder, muteborder, mutewidth, muteheight, x, y) then
 		if music:isPlaying() then
 			music:pause()
