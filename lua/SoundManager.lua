@@ -17,6 +17,9 @@ function SoundManager.load(mute)
 	this.curfade = ""
 	this.fade = 1
 	this.fadeDuration = 1
+	for k,v in pairs(this.music) do
+		v:setLooping(true)
+	end
 end
 function SoundManager.update(dt)
 	if not this.music then

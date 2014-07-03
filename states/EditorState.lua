@@ -173,6 +173,11 @@ function EditorState.keypressed(k)
 			end
 		end
 	elseif k == "return" then
+		if edit.level > 0 then
+			levels[edit.level]={}
+			levels[edit.level].world = table.copy(edit.world, true)
+			levels[edit.level].taps = edit.taps
+		end
 		love.keyboard.setTextInput(false)
 		clvl.world = table.copy(edit.world, true)
 		clvl.level = edit.level
