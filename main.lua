@@ -17,6 +17,7 @@ ButtonManager = require("lua.ButtonManager")
 StateManager = require("lua.StateManager")
 BackgroundManager = require("lua.BackgroundManager")
 ScrollManager = require("lua.ScrollManager")
+SoundManager = require("lua.SoundManager")
 Tween = require("libs.tween")
 require("libs.Tserial")
 require("lua.buttons")
@@ -57,14 +58,8 @@ function AllState.load()
 	buttonimg = love.graphics.newImage("gfx/buttons/button1.png")
 	
 	-- Sounds
-	music = love.audio.newSource( "sfx/Sunny-Fields-Gallop.mp3", "stream" )
-	music:setLooping( true )
-	music:setVolume( 0.5 )
-	if not save.mute then
-		music:play()
-	end
-
-	hit = love.audio.newSource( "sfx/Hit.wav", "static" )
+	SoundManager.load(save.mute)
+	SoundManager.playMusic("menu", true)
 	
 	-- Variables
 	OS = love.system.getOS()
@@ -118,6 +113,7 @@ function AllState.load()
 
 end
 function AllState.update( dt )
+	SoundManager.update(dt)
 	BackgroundManager.update(dt)
 	if game.state then
 		error("game.state changed to " .. game.state)

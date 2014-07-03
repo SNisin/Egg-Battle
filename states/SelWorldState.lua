@@ -29,6 +29,7 @@ function SelWorldState.load()
 	this.buttonimg = love.graphics.newImage("gfx/buttons/worldbutton.png")
 end
 function SelWorldState.enter()
+	SoundManager.playMusic("menu")
 	local numinrow, offs = this.getWorldVars()
 	local rows = math.floor((math.floor(#levels/15)-1)/numinrow)+1
 	local contentheight = rows*(offs+BUTTON_HEIGHT)+offs

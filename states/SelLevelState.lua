@@ -29,6 +29,7 @@ function SelLevelState.load()
 
 end
 function SelLevelState.enter()
+	SoundManager.playMusic("menu")
 	local numinrow, offs = this.getLevelVars()
 	local rows = math.floor((14)/numinrow)+1
 	local contentheight = rows*(offs+BUTTON_HEIGHT)+offs

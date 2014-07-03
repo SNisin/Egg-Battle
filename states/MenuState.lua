@@ -37,6 +37,7 @@ function MenuState.enter()
 	else
 		this.notFirstTime = true
 	end
+	SoundManager.playMusic("menu")
 end
 function MenuState.update(dt)
 	this.animt:update(dt)
@@ -56,7 +57,7 @@ function MenuState.draw()
 	local mutewidth, muteheight = 48*pixelscale, 48*pixelscale
 	local muteborder = 10*pixelscale
 	local muteimage
-	if music:isPlaying() then
+	if not SoundManager.isMute() then
 		muteimage = this.muteoff
 	else
 		muteimage = this.muteon
@@ -88,11 +89,11 @@ function MenuState.mousepressed(x, y, button)
 	local mutewidth, muteheight = 48*pixelscale, 48*pixelscale
 	local muteborder = 10*pixelscale
 	if ButtonManager.check(love.graphics.getWidth()-mutewidth-muteborder, muteborder, mutewidth, muteheight, x, y) then
-		if music:isPlaying() then
-			music:pause()
+		if not SoundManager.isMute() then
+			SoundManager.setMute(true)
 			save.mute = true
 		else
-			music:play()
+			SoundManager.setMute(false)
 			save.mute = false
 		end
 		save_game()

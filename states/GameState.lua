@@ -19,6 +19,9 @@ GameState.this = this
 function GameState.load()
 	this.resetbutton = love.graphics.newImage("gfx/reset.png")
 end
+function GameState.enter(  )
+	SoundManager.playMusic("game")
+end
 function GameState.update(dt)
 	for i,v in ipairs(clvl.projectiles) do
 		if v.dir == "left" then
@@ -36,6 +39,7 @@ function GameState.update(dt)
 		end
 	end
 	if this.checkwin() then
+		SoundManager.playSound("win", true)
 		if game.editt then
 			editmessage = "WON!"
 			editmessageop = 255
@@ -58,6 +62,7 @@ function GameState.update(dt)
 		end
 	end
 	if #clvl.projectiles == 0 and not this.checkwin() and clvl.taps <= 0 then
+		SoundManager.playSound("lost", true)
 		if game.editt then
 			editmessage = "LOST!"
 			editmessageop = 255
@@ -143,7 +148,7 @@ function this.hitegg(mx, my)
 			table.insert(clvl.projectiles, {x=(x-1)*game.tilew+game.tilew/2, y=(y-1)*game.tileh+game.tileh/2, dir="up"})
 			table.insert(clvl.projectiles, {x=(x-1)*game.tilew+game.tilew/2, y=(y-1)*game.tileh+game.tileh/2, dir="down"})
 		end
-		hit:play()
+		SoundManager.playSound("hit")
 		return true
 	end
 	return false
