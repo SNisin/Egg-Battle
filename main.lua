@@ -20,6 +20,7 @@ BackgroundManager 	= require("lua.BackgroundManager")
 ScrollManager 		= require("lua.ScrollManager")
 SoundManager 		= require("lua.SoundManager")
 SaveManager			= require("lua.SaveManager")
+RessourceManager	= require("lua.RessourceManager")
 
 -- Libraries
 Tween = require("libs.tween")
@@ -42,23 +43,8 @@ function AllState.load()
 
 	SaveManager.loadGame()
 	
-	-- Images
-	eggs = {
-		[1] = love.graphics.newImage("gfx/eggs/1.png"),
-		[2] = love.graphics.newImage("gfx/eggs/2.png"),
-		[3] = love.graphics.newImage("gfx/eggs/3.png"),
-		[4] = love.graphics.newImage("gfx/eggs/4.png")
-
-	}
-	cloudsimg = {
-		[1] = love.graphics.newImage("gfx/clouds/cloud1.png"),
-		[2] = love.graphics.newImage("gfx/clouds/cloud2.png")
-
-	}
-	logo = love.graphics.newImage("gfx/logo.png")
-	backimg = love.graphics.newImage("gfx/back.png")
-	barimg = love.graphics.newImage("gfx/bar.png")
-	buttonimg = love.graphics.newImage("gfx/buttons/button1.png")
+	-- Images / Sounds
+	RessourceManager.load()
 	
 	-- Sounds
 	SoundManager.load(SaveManager.save.mute)
@@ -142,6 +128,7 @@ function AllState.resize( w, h )
 end
 
 function updateGraphics()
+	local eggs = RessourceManager.images.eggs
 	game.offY = 50*pixelscale 
 	game.width=love.graphics.getWidth()
 	game.height=love.graphics.getHeight()-game.offY

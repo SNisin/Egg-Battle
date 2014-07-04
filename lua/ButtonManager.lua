@@ -31,6 +31,7 @@ function ButtonManager:draw(offY)
 		end
 		y = y + (offY or 0)
 		love.graphics.setColor(255,255,255,255)
+		local buttonimg =  RessourceManager.images.buttons.menu
 		love.graphics.draw(buttonimg, x, y, 0, w/buttonimg:getWidth(), h/buttonimg:getHeight())
 		
 		love.graphics.setColor(0,0,0,255)

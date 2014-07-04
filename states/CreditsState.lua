@@ -153,6 +153,7 @@ function CreditsState.draw()
 	
 
 	love.graphics.setColor(255,255,255,150)
+	local barimg = RessourceManager.images.bar
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
 	ButtonManager.drawBackButton()
 end

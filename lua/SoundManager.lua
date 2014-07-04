@@ -1,15 +1,8 @@
 local SoundManager = {}
 local this = {}
 function SoundManager.load(mute)
-	this.music = {
-		menu = love.audio.newSource( "sfx/Sunny-Fields-Gallop.ogg", "stream" ),
-		game = love.audio.newSource( "sfx/Monkeys-Spinning-Monkeys.ogg", "stream" )
-	}
-	this.sounds = {
-		hit = love.audio.newSource( "sfx/Hit.ogg", "static" ),
-		win = love.audio.newSource( "sfx/win.ogg", "static" ),
-		lost = love.audio.newSource( "sfx/lost.ogg", "static" )
-	}
+	this.music = RessourceManager.sounds.music
+	this.sounds = RessourceManager.sounds.effects
 	this.mute = mute or false
 	this.oldMusic = ""
 	this.playingMusic = ""

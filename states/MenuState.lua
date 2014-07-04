@@ -22,8 +22,8 @@ function MenuState.load()
 	if SaveManager.loaded then
 		this.setButtons()
 	end
-	this.muteoff = love.graphics.newImage("gfx/muteoff.png")
-	this.muteon = love.graphics.newImage("gfx/muteon.png")
+	this.muteoff = RessourceManager.images.muteoff
+	this.muteon = RessourceManager.images.muteon
 	
 end
 function MenuState.enter()
@@ -44,6 +44,7 @@ function MenuState.update(dt)
 end
 
 function MenuState.draw()
+	local logo = RessourceManager.images.logo
 	love.graphics.setColor(255,255,255,255)
 	local logoscale  = math.min(love.graphics.getWidth()/(logo:getWidth()*1.1), love.graphics.getHeight()/(logo:getHeight()*3))
 	local logoY = (love.graphics.getHeight()/2-60*pixelscale)/2-logo:getHeight()*logoscale/2 

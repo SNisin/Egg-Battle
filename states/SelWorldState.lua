@@ -26,7 +26,7 @@ function SelWorldState.load()
 	BUTTON_WIDTH = 130*pixelscale
 	BUTTON_HEIGHT = 130*pixelscale
 	BUTTON_BORDER = 10*pixelscale
-	this.buttonimg = love.graphics.newImage("gfx/buttons/worldbutton.png")
+	this.buttonimg = RessourceManager.images.buttons.worldbutton
 end
 function SelWorldState.enter()
 	SoundManager.playMusic("menu")
@@ -53,6 +53,7 @@ function SelWorldState.draw()
 		end
 	end
 	love.graphics.setColor(255,255,255,150)
+	local barimg = RessourceManager.images.bar
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
 	ButtonManager.drawBackButton()
 

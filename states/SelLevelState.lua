@@ -23,9 +23,9 @@ local BUTTON_HEIGHT = 0
 function SelLevelState.load()
 	BUTTON_WIDTH = 50*pixelscale
 	BUTTON_HEIGHT = 50*pixelscale
-	this.buttonimg = love.graphics.newImage("gfx/buttons/levelbutton.png")
-	this.finishedimg = love.graphics.newImage("gfx/buttons/levelfinished.png")
-	this.notavailableimg = love.graphics.newImage("gfx/buttons/levelnotavailable.png")
+	this.buttonimg = RessourceManager.images.buttons.levelbutton
+	this.finishedimg =  RessourceManager.images.buttons.levelfinished
+	this.notavailableimg =  RessourceManager.images.buttons.levelnotavailable
 
 end
 function SelLevelState.enter()
@@ -50,6 +50,7 @@ function SelLevelState.draw()
 		this.drawLevelButton(i, (i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY)
 	end
 	love.graphics.setColor(255,255,255,150)
+	local barimg = RessourceManager.images.bar
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
 	ButtonManager.drawBackButton()
 	

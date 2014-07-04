@@ -17,7 +17,8 @@ local GameState = {}
 local this = {}
 GameState.this = this
 function GameState.load()
-	this.resetbutton = love.graphics.newImage("gfx/reset.png")
+	this.resetbutton = RessourceManager.images.buttons.reset
+	this.eggs = RessourceManager.images.eggs
 end
 function GameState.enter(  )
 	SoundManager.playMusic("game")
@@ -78,8 +79,8 @@ function GameState.draw()
 	love.graphics.setColor(255,255,255,255)
 	for y,v in ipairs(clvl.world) do
 		for x,v2 in ipairs(v) do
-			if eggs[v2] then
-				love.graphics.draw(eggs[v2], (x-1)*game.tilew+game.eggofX, (y-1)*game.tileh+game.eggofY +game.offY, 0, game.scale, game.scale)
+			if this.eggs[v2] then
+				love.graphics.draw(this.eggs[v2], (x-1)*game.tilew+game.eggofX, (y-1)*game.tileh+game.eggofY +game.offY, 0, game.scale, game.scale)
 			end
 		end
 	end
@@ -92,6 +93,7 @@ function GameState.draw()
 		love.graphics.circle("line", v.x, v.y+game.offY, 5*game.scale)
 	end
 	love.graphics.setColor(255,255,255,150)
+	local barimg = RessourceManager.images.bar
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
 	
 	love.graphics.setColor(0,0,0,255)
@@ -129,7 +131,7 @@ end
 function this.checkwin()
 	for y,v in ipairs(clvl.world) do
 		for x,v2 in ipairs(v) do
-			if eggs[v2] then
+			if this.eggs[v2] then
 				return false
 			end
 		end

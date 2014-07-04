@@ -18,42 +18,48 @@ local _clouds = {}
 local _cloudspawntime = -5
 local timet = 0
 local _offY = 0
+
+local img = {}
+
+
 local function _updateGraphics()
-	local backscale = math.max(love.graphics.getWidth()/backimg:getWidth(), love.graphics.getHeight()/backimg:getHeight())
+	local backscale = math.max(love.graphics.getWidth()/img.back:getWidth(), love.graphics.getHeight()/img.back:getHeight())
 	_clouds = {}
 	cloudspawntime = -5
-	table.insert(_clouds, {x=love.math.random(-500*backscale, love.graphics.getWidth()), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#cloudsimg), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
-	table.insert(_clouds, {x=love.math.random(-500*backscale, love.graphics.getWidth()), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#cloudsimg), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
-	table.insert(_clouds, {x=love.math.random(-500*backscale, love.graphics.getWidth()), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#cloudsimg), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
-	table.insert(_clouds, {x=love.math.random(-500*backscale, love.graphics.getWidth()), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#cloudsimg), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
-	table.insert(_clouds, {x=love.math.random(-500*backscale, love.graphics.getWidth()), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#cloudsimg), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
+	table.insert(_clouds, {x=love.math.random(-500*backscale, love.graphics.getWidth()), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#img.clouds), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
+	table.insert(_clouds, {x=love.math.random(-500*backscale, love.graphics.getWidth()), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#img.clouds), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
+	table.insert(_clouds, {x=love.math.random(-500*backscale, love.graphics.getWidth()), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#img.clouds), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
+	table.insert(_clouds, {x=love.math.random(-500*backscale, love.graphics.getWidth()), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#img.clouds), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
+	table.insert(_clouds, {x=love.math.random(-500*backscale, love.graphics.getWidth()), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#img.clouds), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
 end
 function BackgroundManager.load()
+	img.back = RessourceManager.images.background
+	img.clouds = RessourceManager.images.clouds
 	_updateGraphics()
 end
 function BackgroundManager.update(dt)
 	dt = math.min(dt, 0.1)
-	local backscale = math.max(love.graphics.getWidth()/backimg:getWidth(), love.graphics.getHeight()/backimg:getHeight())
+	local backscale = math.max(love.graphics.getWidth()/img.back:getWidth(), love.graphics.getHeight()/img.back:getHeight())
 	timet = timet + dt
 	for i, v in ipairs(_clouds) do
 		v.x = v.x-v.speed*dt
-		if v.x<0-cloudsimg[v.type]:getWidth()*backscale then
+		if v.x<0-img.clouds[v.type]:getWidth()*backscale then
 			table.remove(_clouds, i)
 		end
 	end
 	if timet > cloudspawntime+5 then
 		cloudspawntime = timet
-		table.insert(_clouds, {x=love.graphics.getWidth(), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#cloudsimg), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
+		table.insert(_clouds, {x=love.graphics.getWidth(), y=love.math.random(10, 200)*backscale, type=love.math.random(1,#img.clouds), speed=love.math.random(30, 160)*backscale, op=love.math.random(50,200)})
 	end
 end
 function BackgroundManager.draw(offY)
 	offY = offY or _offY or 0
 	love.graphics.setColor(255,255,255,255)
-	local backscale = math.max(love.graphics.getWidth()/backimg:getWidth(), love.graphics.getHeight()/backimg:getHeight())
-	love.graphics.draw(backimg, 0, -(backimg:getHeight()*backscale-love.graphics.getHeight())+offY*0.3, 0, backscale, backscale)
+	local backscale = math.max(love.graphics.getWidth()/img.back:getWidth(), love.graphics.getHeight()/img.back:getHeight())
+	love.graphics.draw(img.back, 0, -(img.back:getHeight()*backscale-love.graphics.getHeight())+offY*0.3, 0, backscale, backscale)
 	for i, v in ipairs(_clouds) do
 		love.graphics.setColor(255, 255, 255, v.op)
-		love.graphics.draw(cloudsimg[v.type], v.x, v.y + offY*0.1, 0, backscale, backscale)
+		love.graphics.draw(img.clouds[v.type], v.x, v.y + offY*0.1, 0, backscale, backscale)
 	end
 	_offY = 0
 end
