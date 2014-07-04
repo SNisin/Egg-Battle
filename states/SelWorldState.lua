@@ -97,8 +97,8 @@ end
 function this.drawWorldButton(world, x, y)
 	
 	local worldprog = 0
-	if save.worlds and save.worlds[world] then
-		for i, v in ipairs(save.worlds[world]) do
+	if SaveManager.save.worlds and SaveManager.save.worlds[world] then
+		for i, v in ipairs(SaveManager.save.worlds[world]) do
 			if v then
 				worldprog = worldprog + 1
 			end

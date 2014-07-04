@@ -48,17 +48,17 @@ function GameState.update(dt)
 		else
 			StateManager.setState("won")
 			local world = math.floor((clvl.level-1)/15)+1
-			if clvl.level > save.crnt then
-				save.crnt = clvl.level
+			if clvl.level > SaveManager.save.crnt then
+				SaveManager.save.crnt = clvl.level
 			end
-			if not save.worlds then
-				save.worlds = {}
+			if not SaveManager.save.worlds then
+				SaveManager.save.worlds = {}
 			end
-			if not save.worlds[world] then
-				save.worlds[world] = {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false}
+			if not SaveManager.save.worlds[world] then
+				SaveManager.save.worlds[world] = {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false}
 			end
-			save.worlds[world][((clvl.level-1)%15)+1] = true
-			save_game()
+			SaveManager.save.worlds[world][((clvl.level-1)%15)+1] = true
+			SaveManager.saveGame()
 		end
 	end
 	if #clvl.projectiles == 0 and not this.checkwin() and clvl.taps <= 0 then

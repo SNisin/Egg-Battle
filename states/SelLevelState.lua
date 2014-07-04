@@ -92,7 +92,9 @@ function SelLevelState.resize( width, height )
 end
 function this.drawLevelButton(level, x, y)
 	local drawimg
-	if save.worlds and save.worlds[game.worldselected] and save.worlds[game.worldselected][level] then
+	if SaveManager.save.worlds and 
+	   SaveManager.save.worlds[game.worldselected] and 
+	   SaveManager.save.worlds[game.worldselected][level] then
 		drawimg = this.finishedimg
 
 	elseif canPlayLevel(level) then

@@ -13,14 +13,19 @@
    limitations under the License.
 ]]
 
-ButtonManager = require("lua.ButtonManager")
-StateManager = require("lua.StateManager")
-BackgroundManager = require("lua.BackgroundManager")
-ScrollManager = require("lua.ScrollManager")
-SoundManager = require("lua.SoundManager")
+-- Managers
+ButtonManager 		= require("lua.ButtonManager")
+StateManager 		= require("lua.StateManager")
+BackgroundManager 	= require("lua.BackgroundManager")
+ScrollManager 		= require("lua.ScrollManager")
+SoundManager 		= require("lua.SoundManager")
+SaveManager			= require("lua.SaveManager")
+
+-- Libraries
 Tween = require("libs.tween")
-require("libs.Tserial")
-require("lua.save")
+		require("libs.Tserial")
+
+-- Gamestates
 require("states.MenuState")
 require("states.GameState")
 require("states.WonState")
@@ -29,14 +34,13 @@ require("states.EditorState")
 require("states.SelWorldState")
 require("states.SelLevelState")
 require("states.CreditsState")
---lovebird = require "lovebird"
 
 local AllState = {}
 function AllState.load()
 	io.stdout:setvbuf("no")
 	love.filesystem.setIdentity("EggBattle")
 
-	load_game()
+	SaveManager.loadGame()
 	
 	-- Images
 	eggs = {
@@ -57,7 +61,7 @@ function AllState.load()
 	buttonimg = love.graphics.newImage("gfx/buttons/button1.png")
 	
 	-- Sounds
-	SoundManager.load(save.mute)
+	SoundManager.load(SaveManager.save.mute)
 	SoundManager.playMusic("menu", true)
 	
 	-- Variables
@@ -176,12 +180,16 @@ function canPlayLevel(level, all)
 		level = (level-1)%15+1
 		--print(game.worldselected, level)
 	end
-	if save.worlds and save.worlds[game.worldselected] and save.worlds[game.worldselected][level] then
+	if SaveManager.save.worlds and 
+	   SaveManager.save.worlds[game.worldselected] and 
+	   SaveManager.save.worlds[game.worldselected][level] then
 		return true
 	end
 	local notmade = 3
 	for i = 1,level-1 do
-		if (not save.worlds) or (not save.worlds[game.worldselected]) or (not save.worlds[game.worldselected][i]) then
+		if (not SaveManager.save.worlds) or 
+		   (not SaveManager.save.worlds[game.worldselected]) or 
+		   (not SaveManager.save.worlds[game.worldselected][i]) then
 			notmade = notmade-1
 		end
 	end

@@ -19,7 +19,7 @@ MenuState.this = this
 
 
 function MenuState.load()
-	if save then
+	if SaveManager.loaded then
 		this.setButtons()
 	end
 	this.muteoff = love.graphics.newImage("gfx/muteoff.png")
@@ -27,7 +27,7 @@ function MenuState.load()
 	
 end
 function MenuState.enter()
-	if save then
+	if SaveManager.loaded then
 		this.setButtons()
 	end
 	this.anim = {prog = love.window.getHeight()}
@@ -118,7 +118,7 @@ end
 function this.setButtons()
 	this.buttons = this.buttons or ButtonManager.new()
 	this.buttons:removeAllButtons()
-	if save.crnt == 0 then
+	if SaveManager.save.crnt == 0 then
 		this.buttons:addCenterButton("start", "Start Game", -60*pixelscale)
 	else
 		this.buttons:addCenterButton("continue", "Continue Game", -60*pixelscale)
