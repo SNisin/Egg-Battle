@@ -79,7 +79,7 @@ function CreditsState.update(dt)
 		local cursorchanged = false
 		if love.mouse.getY() > game.offY then
 			for i, v in ipairs(creditlinks) do
-				if checkButton((love.graphics.getWidth()-v.width)/2, v.y, v.width, v.height) then
+				if ButtonManager.check((love.graphics.getWidth()-v.width)/2, v.y, v.width, v.height) then
 					if not (curcursor == "hand") then
 						curcursor = "hand"
 						love.mouse.setCursor( handcursor )
@@ -162,7 +162,7 @@ end
 function this.mouseclicked(x, y, button)
 	if y > game.offY then
 		for i, v in ipairs(creditlinks) do
-			if checkButton((love.graphics.getWidth()-v.width)/2, v.y, v.width, v.height) then
+			if ButtonManager.check((love.graphics.getWidth()-v.width)/2, v.y, v.width, v.height) then
 				if love.system and love.system.openURL then
 					love.system.openURL(v.link)
 					break

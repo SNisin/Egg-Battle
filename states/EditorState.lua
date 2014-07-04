@@ -122,7 +122,7 @@ function EditorState.mousepressed(mx, my, button)
 		
 	end
 	edit.fsel = 0
-	if checkButton(math.floor(20*pixelscale), 0, font:getWidth("Level: "..edit.level), game.offY) then
+	if ButtonManager.check(math.floor(20*pixelscale), 0, font:getWidth("Level: "..edit.level), game.offY) then
 		edit.olevel = edit.level
 		if button == "wu" then
 			edit.level = math.max(0, edit.level+1)
@@ -135,7 +135,7 @@ function EditorState.mousepressed(mx, my, button)
 			love.keyboard.setTextInput(true)
 		end
 		
-	elseif checkButton(math.floor(60*pixelscale) + font:getWidth("Level: "..edit.level), 0, font:getWidth("Moves: "..edit.taps), game.offY) then
+	elseif ButtonManager.check(math.floor(60*pixelscale) + font:getWidth("Level: "..edit.level), 0, font:getWidth("Moves: "..edit.taps), game.offY) then
 		if button == "wu" then
 			edit.taps = math.max(0, edit.taps+1)
 		elseif button == "wd" then
@@ -144,9 +144,9 @@ function EditorState.mousepressed(mx, my, button)
 			edit.fsel = 2
 			love.keyboard.setTextInput(true)
 		end
-	elseif checkButton(love.graphics.getWidth() - font:getWidth("Save!") - 20*pixelscale, 0, font:getWidth("Save!"), game.offY) then
+	elseif ButtonManager.check(love.graphics.getWidth() - font:getWidth("Save!") - 20*pixelscale, 0, font:getWidth("Save!"), game.offY) then
 		EditorState.keypressed(" ")
-	elseif checkButton(love.graphics.getWidth() - font:getWidth("Save!") - font:getWidth("Try") - 40*pixelscale, 0, font:getWidth("Try"), game.offY) then
+	elseif ButtonManager.check(love.graphics.getWidth() - font:getWidth("Save!") - font:getWidth("Try") - 40*pixelscale, 0, font:getWidth("Try"), game.offY) then
 		EditorState.keypressed("return")
 	else
 		love.keyboard.setTextInput(false)
