@@ -78,14 +78,15 @@ function MenuState.mousepressed(x, y, button)
 		StateManager.setState("selectworld")
 	end
 
+	if clickedbutton == "customlevels" then
+		StateManager.setState("customlevels")
+	end
 	if clickedbutton == "credits" then
 		creditsScroll = -game.offY -10*pixelscale
 		creditsAutoScroll = 0
 		StateManager.setState("credits")
 	end
-	if clickedbutton == "quit" then
-		love.event.quit()
-	end
+	
 
 	local mutewidth, muteheight = 48*pixelscale, 48*pixelscale
 	local muteborder = 10*pixelscale
@@ -108,6 +109,8 @@ end
 function MenuState.keypressed(k)
 	if k == "x" then
 		StateManager.setState("editor")
+	elseif k == "c" then
+		StateManager.setState("customlevels")
 	elseif k == "r" then
 		this.animt:reset()
 	elseif k == "escape" then
@@ -124,8 +127,8 @@ function this.setButtons()
 	else
 		this.buttons:addCenterButton("continue", "Continue Game", -60*pixelscale)
 	end
-	this.buttons:addCenterButton("credits", "Credits", 50*pixelscale)
-	this.buttons:addCenterButton("quit", "Quit", 130*pixelscale)
+	this.buttons:addCenterButton("customlevels", "Custom Levels", 30*pixelscale)
+	this.buttons:addCenterButton("credits", "Credits", 120*pixelscale)
 end
 
 StateManager.registerState("menu", MenuState)

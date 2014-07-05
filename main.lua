@@ -21,6 +21,7 @@ ScrollManager 		= require("lua.ScrollManager")
 SoundManager 		= require("lua.SoundManager")
 SaveManager			= require("lua.SaveManager")
 RessourceManager	= require("lua.RessourceManager")
+DownloadManager		= require("lua.DownloadManager")
 
 -- Libraries
 Tween = require("libs.tween")
@@ -35,6 +36,8 @@ require("states.EditorState")
 require("states.SelWorldState")
 require("states.SelLevelState")
 require("states.CreditsState")
+require("states.CustomLevelState")
+require("states.DownloadState")
 
 local AllState = {}
 function AllState.load()
@@ -55,6 +58,7 @@ function AllState.load()
 	timet = 0
 	pixelscale = love.window.getPixelScale()
 	font = love.graphics.newFont("gfx/font.ttf",math.floor(20*pixelscale))
+	smallfont = love.graphics.newFont("gfx/font.ttf",math.floor(13*pixelscale))
 	game = {
 	}
 	game.worldselected = 1
