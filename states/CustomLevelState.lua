@@ -24,16 +24,29 @@ function CustomLevelsState.load()
 		clickcallback = this.mouseclicked,
 	})
 	this.boxheight = 100*pixelscale
+	this.selectedlevel = 0
 end
 function CustomLevelsState.enter()
 	this.levelList = {}
+	this.selectedlevel = 0
 	StateManager.addState("download", "http://eggbattle.bplaced.net/getList.php", "Getting list...")
 end
 function CustomLevelsState.returned(val)
-	print(val)
+
+	
 	if type(val) == "table" and not val.error then
-		this.levelList = val
-		this.scroll:setContentHeight(#val*this.boxheight)
+		if this.selectedlevel > 0 then
+			local cuslevel = Tserial.unpack(val.level, true)
+			clvl.world = table.copy(cuslevel.world, true)
+			clvl.level = 0
+			clvl.taps = cuslevel.taps
+			clvl.projectiles = {}
+			StateManager.setState("game")
+			game.customt = true
+		else
+			this.levelList = val
+			this.scroll:setContentHeight(#val*this.boxheight)
+		end
 	elseif type(val) == "table" and val.error then
 		print("Error", val.errortype, val.errordesc)
 		StateManager.setState("menu")
@@ -43,6 +56,9 @@ function CustomLevelsState.returned(val)
 	end
 end
 function CustomLevelsState.update(dt)
+	if this.selectedlevel > 0 then
+
+	end
 	this.scroll:update(dt)
 end
 function CustomLevelsState.draw()
@@ -77,8 +93,16 @@ function CustomLevelsState.draw()
 	ButtonManager.drawBackButton()
 end
 function this.mouseclicked(x, y)
-	if ButtonManager.checkBackButton(x, y) then
-		StateManager.setState("menu")
+	if y < game.offY then
+		if ButtonManager.checkBackButton(x, y) then
+			StateManager.setState("menu")
+		end
+	else
+		local clickedlevel = math.floor((y+this.scroll.scrollY)/this.boxheight)+1
+		if this.levelList[clickedlevel] then
+			this.selectedlevel = clickedlevel
+			StateManager.addState("download", "http://eggbattle.bplaced.net/getLevel.php?id="..this.levelList[clickedlevel].id, "Downloading level...")
+		end
 	end
 end
 function CustomLevelsState.mousepressed(x, y, button)
