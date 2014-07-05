@@ -19,12 +19,33 @@ GameState.this = this
 function GameState.load()
 	this.resetbutton = RessourceManager.images.buttons.reset
 	this.eggs = RessourceManager.images.eggs
+	this.clvl = {}
+	this.origlevel = {}
 end
-function GameState.enter(  )
+function GameState.enter( level )
+	this.clvl = {
+		world={
+			{0,0,0,0,0},
+			{0,0,0,0,0},
+			{0,0,0,0,0},
+			{0,0,0,0,0},
+			{0,0,0,0,0},
+			{0,0,0,0,0}
+		},
+		taps=0,
+		level=0,
+		projectiles = {}
+	}
+	if type(level) == "table" then
+		table.merge(this.clvl, level)
+	else
+		table.merge(this.clvl, clvl)
+	end
+	this.origlevel = table.copy(this.clvl, true)
 	SoundManager.playMusic("game")
 end
 function GameState.update(dt)
-	for i,v in ipairs(clvl.projectiles) do
+	for i,v in ipairs(this.clvl.projectiles) do
 		if v.dir == "left" then
 			v.x = v.x-200*dt*game.scaleX
 		elseif v.dir == "right" then
@@ -34,9 +55,9 @@ function GameState.update(dt)
 		elseif v.dir == "down" then
 			v.y = v.y+200*dt*game.scaleY
 		end
-		if v.x < 0 or v.y < 0 or v.x > #clvl.world[1]*game.tilew or v.y > #clvl.world*game.tileh or this.hitegg(v.x, v.y) then
+		if v.x < 0 or v.y < 0 or v.x > #this.clvl.world[1]*game.tilew or v.y > #this.clvl.world*game.tileh or this.hitegg(v.x, v.y) then
 
-			table.remove(clvl.projectiles, i)
+			table.remove(this.clvl.projectiles, i)
 		end
 	end
 	if this.checkwin() then
@@ -48,9 +69,9 @@ function GameState.update(dt)
 			StateManager.setState("editor")
 		else
 			StateManager.setState("won")
-			local world = math.floor((clvl.level-1)/15)+1
-			if clvl.level > SaveManager.save.crnt then
-				SaveManager.save.crnt = clvl.level
+			local world = math.floor((this.clvl.level-1)/15)+1
+			if this.clvl.level > SaveManager.save.crnt then
+				SaveManager.save.crnt = this.clvl.level
 			end
 			if not SaveManager.save.worlds then
 				SaveManager.save.worlds = {}
@@ -58,11 +79,11 @@ function GameState.update(dt)
 			if not SaveManager.save.worlds[world] then
 				SaveManager.save.worlds[world] = {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false}
 			end
-			SaveManager.save.worlds[world][((clvl.level-1)%15)+1] = true
+			SaveManager.save.worlds[world][((this.clvl.level-1)%15)+1] = true
 			SaveManager.saveGame()
 		end
 	end
-	if #clvl.projectiles == 0 and not this.checkwin() and clvl.taps <= 0 then
+	if #this.clvl.projectiles == 0 and not this.checkwin() and this.clvl.taps <= 0 then
 		SoundManager.playSound("lost", true)
 		if game.editt then
 			editmessage = "LOST!"
@@ -77,7 +98,7 @@ end
 
 function GameState.draw()
 	love.graphics.setColor(255,255,255,255)
-	for y,v in ipairs(clvl.world) do
+	for y,v in ipairs(this.clvl.world) do
 		for x,v2 in ipairs(v) do
 			if this.eggs[v2] then
 				love.graphics.draw(this.eggs[v2], (x-1)*game.tilew+game.eggofX, (y-1)*game.tileh+game.eggofY +game.offY, 0, game.scale, game.scale)
@@ -85,7 +106,7 @@ function GameState.draw()
 		end
 	end
 	
-	for i,v in ipairs(clvl.projectiles) do
+	for i,v in ipairs(this.clvl.projectiles) do
 		love.graphics.setColor(255,255,0,255)
 		love.graphics.circle("fill", v.x, v.y+game.offY, 5*game.scale)
 		
@@ -97,9 +118,9 @@ function GameState.draw()
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
 	
 	love.graphics.setColor(0,0,0,255)
-	love.graphics.printf("Moves left: "..clvl.taps, 1, (game.offY-font:getHeight())/2+1, love.graphics.getWidth(), "center")
+	love.graphics.printf("Moves left: "..this.clvl.taps, 1, (game.offY-font:getHeight())/2+1, love.graphics.getWidth(), "center")
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.printf("Moves left: "..clvl.taps, 0, (game.offY-font:getHeight())/2, love.graphics.getWidth(), "center")
+	love.graphics.printf("Moves left: "..this.clvl.taps, 0, (game.offY-font:getHeight())/2, love.graphics.getWidth(), "center")
 
 	local resetwidth, resetheight = 32*pixelscale, 32*pixelscale
 	local offset = (game.offY-resetheight)/2
@@ -110,11 +131,11 @@ function GameState.mousepressed(x, y, button)
 	local resetwidth, resetheight = 32*pixelscale, 32*pixelscale
 	local offset = (game.offY-resetheight)/2
 	if ButtonManager.check(love.graphics.getWidth()-resetwidth-offset, offset, resetwidth, resetheight) then
-		loadLevel(clvl.level)
+		this.clvl = table.copy(this.origlevel, true)
 	end
 
-	if clvl.taps>0 and this.hitegg(x, y-game.offY) then
-		clvl.taps = clvl.taps - 1
+	if this.clvl.taps>0 and this.hitegg(x, y-game.offY) then
+		this.clvl.taps = this.clvl.taps - 1
 	end
 end
 
@@ -129,7 +150,7 @@ function GameState.keypressed(k)
 end
 
 function this.checkwin()
-	for y,v in ipairs(clvl.world) do
+	for y,v in ipairs(this.clvl.world) do
 		for x,v2 in ipairs(v) do
 			if this.eggs[v2] then
 				return false
@@ -142,13 +163,13 @@ end
 function this.hitegg(mx, my)
 	local x = math.floor(mx/game.tilew)+1
 	local y = math.floor(my/game.tileh)+1
-	if clvl.world[y] and clvl.world[y][x] and clvl.world[y][x]>0 then
-		clvl.world[y][x] = clvl.world[y][x]-1
-		if clvl.world[y][x] == 0 then
-			table.insert(clvl.projectiles, {x=(x-1)*game.tilew+game.tilew/2, y=(y-1)*game.tileh+game.tileh/2, dir="left"})
-			table.insert(clvl.projectiles, {x=(x-1)*game.tilew+game.tilew/2, y=(y-1)*game.tileh+game.tileh/2, dir="right"})
-			table.insert(clvl.projectiles, {x=(x-1)*game.tilew+game.tilew/2, y=(y-1)*game.tileh+game.tileh/2, dir="up"})
-			table.insert(clvl.projectiles, {x=(x-1)*game.tilew+game.tilew/2, y=(y-1)*game.tileh+game.tileh/2, dir="down"})
+	if this.clvl.world[y] and this.clvl.world[y][x] and this.clvl.world[y][x]>0 then
+		this.clvl.world[y][x] = this.clvl.world[y][x]-1
+		if this.clvl.world[y][x] == 0 then
+			table.insert(this.clvl.projectiles, {x=(x-1)*game.tilew+game.tilew/2, y=(y-1)*game.tileh+game.tileh/2, dir="left"})
+			table.insert(this.clvl.projectiles, {x=(x-1)*game.tilew+game.tilew/2, y=(y-1)*game.tileh+game.tileh/2, dir="right"})
+			table.insert(this.clvl.projectiles, {x=(x-1)*game.tilew+game.tilew/2, y=(y-1)*game.tileh+game.tileh/2, dir="up"})
+			table.insert(this.clvl.projectiles, {x=(x-1)*game.tilew+game.tilew/2, y=(y-1)*game.tileh+game.tileh/2, dir="down"})
 		end
 		SoundManager.playSound("hit")
 		return true
