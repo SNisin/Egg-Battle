@@ -92,12 +92,12 @@ function MenuState.mousepressed(x, y, button)
 	if ButtonManager.check(love.graphics.getWidth()-mutewidth-muteborder, muteborder, mutewidth, muteheight, x, y) then
 		if not SoundManager.isMute() then
 			SoundManager.setMute(true)
-			save.mute = true
+			SaveManager.save.mute = true
 		else
 			SoundManager.setMute(false)
-			save.mute = false
+			SaveManager.save.mute = false
 		end
-		save_game()
+		SaveManager.saveGame()
 	end
 
 	if y > love.graphics.getHeight()-10 then
