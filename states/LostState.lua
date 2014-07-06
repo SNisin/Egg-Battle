@@ -23,8 +23,14 @@ end
 function LostState.enter()
 	this.buttons:removeAllButtons()
 	this.buttons:addCenterButton("tryagain", "Try again", -120*pixelscale)
-	if canPlayLevel(clvl.level+1, true) then
-		this.buttons:addCenterButton("skip", "Skip level", 0)
+	if game.customlevel then
+		if SelCusLevelState.this.canPlayLevel( "next" ) then
+			this.buttons:addCenterButton("skip", "Skip level", 0)
+		end
+	else
+		if canPlayLevel(clvl.level+1, true) then
+			this.buttons:addCenterButton("skip", "Skip level", 0)
+		end
 	end
 	this.buttons:addCenterButton("menu", "Return to menu", 80*pixelscale)
 	
@@ -51,13 +57,25 @@ end
 function LostState.mousepressed(x, y, button)
 	local clickedbutton = this.buttons:getClickedButton(x, y)
 	if clickedbutton == "tryagain" then
-		this.animBack(function() loadLevel(clvl.level) end)
+		if game.customlevel then
+			this.animBack("game", "again")
+		else
+			this.animBack(function() loadLevel(clvl.level) end)
+		end
 	end
 	if clickedbutton == "skip" and canPlayLevel(clvl.level+1, true) then
-		this.animBack(function() loadLevel(clvl.level+1) end)
+		if game.customlevel then
+			this.animBack("selectcustomlevel", "next")
+		else
+			this.animBack(function() loadLevel(clvl.level+1) end)
+		end
 	end
 	if clickedbutton == "menu" then
-		this.animBack("selectlevel")
+		if game.customlevel then
+			this.animBack("selectcustomlevel", "rettomenu")
+		else
+			this.animBack("selectlevel")
+		end
 	end
 end
 function this.animBack(func, x1, x2)

@@ -38,6 +38,8 @@ function GameState.enter( level )
 	}
 	if type(level) == "table" then
 		table.merge(this.clvl, level)
+	elseif level == "again" then
+		this.clvl = table.copy(this.origlevel, true)
 	else
 		table.merge(this.clvl, clvl)
 	end
@@ -67,6 +69,17 @@ function GameState.update(dt)
 			editmessageop = 255
 			
 			StateManager.setState("editor")
+		elseif game.customlevel then
+			StateManager.setState("won")
+			local world = SelCusLevelState.this.worldId
+			if not SaveManager.save.cusworlds then
+				SaveManager.save.cusworlds = {}
+			end
+			if not SaveManager.save.cusworlds[world] then
+				SaveManager.save.cusworlds[world] = {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false}
+			end
+			SaveManager.save.cusworlds[world][SelCusLevelState.this.playedlevel] = true
+			SaveManager.saveGame()
 		else
 			StateManager.setState("won")
 			local world = math.floor((this.clvl.level-1)/15)+1
@@ -143,6 +156,8 @@ function GameState.keypressed(k)
 	if k == "escape" then
 		if game.editt then
 			StateManager.setState("editor")
+		elseif game.customlevel then
+			StateManager.setState("selectcustomlevel", "rettomenu")
 		else
 			StateManager.setState("selectworld")
 		end

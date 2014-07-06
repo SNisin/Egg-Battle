@@ -38,6 +38,7 @@ require("states.SelLevelState")
 require("states.CreditsState")
 require("states.CustomLevelState")
 require("states.DownloadState")
+require("states.SelCusLevelState")
 
 local AllState = {}
 function AllState.load()
@@ -154,6 +155,7 @@ end
 
 function loadLevel(level)
 	--print(level)
+	game.customlevel = false
 	if levels[level] then
 		clvl.world = table.copy(levels[level].world, true)
 		clvl.taps = levels[level].taps

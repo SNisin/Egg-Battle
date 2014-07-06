@@ -49,17 +49,25 @@ end
 function WonState.mousepressed(x, y, button)
 	local clickedbutton = this.buttons:getClickedButton(x, y)
 	if clickedbutton == "next" then
-		if (clvl.level-1)%15 == 14 then
-			StateManager.setState("selectworld")
+		if game.customlevel then
+			this.animBack("selectcustomlevel", "next")
 		else
-			this.animBack(function() loadLevel(clvl.level+1) end)
+			if (clvl.level-1)%15 == 14 then
+				this.animBack("selectworld")
+			else
+				this.animBack(function() loadLevel(clvl.level+1) end)
+			end
 		end
 	end
 	if clickedbutton == "tryagain" then
-		this.animBack(function() loadLevel(clvl.level) end)
+		this.animBack("game", "again")
 	end
 	if clickedbutton == "menu" then
-		this.animBack("selectlevel")
+		if game.customlevel then
+			this.animBack("selectcustomlevel", "rettomenu")
+		else
+			this.animBack("selectlevel")
+		end
 	end
 end
 function this.animBack(func, x1, x2)

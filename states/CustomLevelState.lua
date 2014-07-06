@@ -36,13 +36,16 @@ function CustomLevelsState.returned(val)
 	
 	if type(val) == "table" and not val.error then
 		if this.selectedlevel > 0 then
-			local cuslevel = Tserial.unpack(val.level, true)
-			clvl.world = table.copy(cuslevel.world, true)
-			clvl.level = 0
-			clvl.taps = cuslevel.taps
-			clvl.projectiles = {}
-			StateManager.setState("game")
-			game.customt = true
+
+			local cuslevel = Tserial.unpack(val.world, true)
+			StateManager.setState("selectcustomlevel", cuslevel, this.selectedlevel)
+
+			--clvl.world = table.copy(cuslevel.world, true)
+			--clvl.level = 0
+			--clvl.taps = cuslevel.taps
+			--clvl.projectiles = {}
+			--StateManager.setState("game")
+			--game.customt = true
 		else
 			this.levelList = val
 			this.scroll:setContentHeight(#val*this.boxheight)
