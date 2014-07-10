@@ -127,7 +127,7 @@ function this.setButtons()
 	else
 		this.buttons:addCenterButton("continue", "Continue Game", -60*pixelscale)
 	end
-	this.buttons:addCenterButton("customlevels", "Custom Levels", 30*pixelscale)
+	this.buttons:addCenterButton("customlevels", "Custom Worlds", 30*pixelscale)
 	this.buttons:addCenterButton("credits", "Credits", 120*pixelscale)
 end
 

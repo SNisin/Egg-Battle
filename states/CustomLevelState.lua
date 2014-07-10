@@ -81,9 +81,30 @@ function CustomLevelsState.draw()
 
 		lg.setFont(smallfont)
 		lg.setColor(100,100,100)
-		lg.printf("by "..v.username, 5*pixelscale, posY+this.boxheight-5*pixelscale-smallfont:getHeight(), lg.getWidth()-10*pixelscale, "right")
+		lg.printf("by "..v.username, 5*pixelscale, posY+this.boxheight-5*pixelscale-smallfont:getHeight(), lg.getWidth()-20*pixelscale, "right")
 
 		lg.print(v.plays.." times played", 5*pixelscale, posY+this.boxheight-5*pixelscale-smallfont:getHeight())
+
+		local numplayed = 0
+		if SaveManager.save.cusworlds and SaveManager.save.cusworlds[v.id] then
+			for i,v in ipairs(SaveManager.save.cusworlds[v.id]) do
+				if v then numplayed = numplayed+1 end
+			end
+		end
+		lg.setColor(100,100,100)
+		local numlevelsY = posY+(this.boxheight-smallfont:getHeight())/2
+		if numplayed > 0 then
+			if numplayed >= v.numlevels then
+				love.graphics.setColor(0,150,0,255)
+			end
+			lg.print(numplayed.."/"..v.numlevels.." levels played", 5*pixelscale, numlevelsY)
+		else
+			if numplayed > 1 then
+				lg.print(v.numlevels.." levels", 5*pixelscale, numlevelsY)
+			else
+				lg.print(v.numlevels.." level", 5*pixelscale, numlevelsY)
+			end
+		end
 		lg.setFont(font)
 
 
