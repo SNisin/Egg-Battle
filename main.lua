@@ -22,6 +22,7 @@ SoundManager 		= require("lua.SoundManager")
 SaveManager			= require("lua.SaveManager")
 RessourceManager	= require("lua.RessourceManager")
 DownloadManager		= require("lua.DownloadManager")
+LevelManager		= require("lua.LevelManager")
 
 -- Libraries
 Tween = require("libs.tween")
@@ -38,7 +39,7 @@ require("states.SelLevelState")
 require("states.CreditsState")
 require("states.CustomLevelState")
 require("states.DownloadState")
-require("states.SelCusLevelState")
+--require("states.SelCusLevelState")
 
 local AllState = {}
 function AllState.load()
@@ -63,45 +64,12 @@ function AllState.load()
 	game = {
 	}
 	game.worldselected = 1
-	worlds = {
-		"Boiled egg",
-		"Coddled egg",
-		"Fried egg",
-		"Omelette",
-		"Poached egg",
-		"Scrambled eggs",
-		"Basted egg",
-		"Shirred eggs",
-	}
 	
 	love.graphics.setFont(font)
 	love.graphics.setLineWidth(pixelscale)
 	love.graphics.setBackgroundColor(44, 209, 255)
 	
-	local contents
-	if love.filesystem.isFile("levels.lua") then
-		contents = love.filesystem.read("levels.lua")
-	else
-		contents = love.filesystem.read("levelsd.lua")
-	end
-	levels = Tserial.unpack(contents)
-	
-	
-	
-	clvl = {
-		world={
-			{0,0,0,0,0},
-			{0,0,0,0,0},
-			{0,0,0,0,0},
-			{0,0,0,0,0},
-			{0,0,0,0,0},
-			{0,0,0,0,0}
-		},
-		taps=0,
-		level=0,
-		projectiles = {}
-	}
-	
+	LevelManager.load()
 	updateGraphics()
 	BackgroundManager.load()
 
@@ -137,8 +105,8 @@ function updateGraphics()
 	game.offY = 50*pixelscale 
 	game.width=love.graphics.getWidth()
 	game.height=love.graphics.getHeight()-game.offY
-	game.tilew=game.width/#clvl.world[1]
-	game.tileh=game.height/#clvl.world
+	game.tilew=game.width/5
+	game.tileh=game.height/6
 	game.scaleX = (game.tilew-10)/eggs[1]:getWidth()
 	game.scaleY = (game.tileh-10)/eggs[1]:getHeight()
 	game.scale = math.min(game.scaleX, game.scaleY)
@@ -152,44 +120,8 @@ function updateGraphics()
 	--table.insert(clouds, {x=732*backscale, y=87*backscale, type=2, speed=97*backscale, op=120})
 	--table.insert(clouds, {x=123*backscale, y=17*backscale, type=2, speed=136*backscale, op=120})
 end
-
-function loadLevel(level)
-	--print(level)
-	game.customlevel = false
-	if levels[level] then
-		clvl.world = table.copy(levels[level].world, true)
-		clvl.taps = levels[level].taps
-		StateManager.setState("game")
-		clvl.level = level
-		clvl.projectiles = {}
-	else
-		StateManager.setState("menu")
-	end
-	
-end
 function canPlayLevel(level, all)
-	if all then
-		game.worldselected = math.floor((level-1)/15)+1
-		level = (level-1)%15+1
-		--print(game.worldselected, level)
-	end
-	if SaveManager.save.worlds and 
-	   SaveManager.save.worlds[game.worldselected] and 
-	   SaveManager.save.worlds[game.worldselected][level] then
-		return true
-	end
-	local notmade = 3
-	for i = 1,level-1 do
-		if (not SaveManager.save.worlds) or 
-		   (not SaveManager.save.worlds[game.worldselected]) or 
-		   (not SaveManager.save.worlds[game.worldselected][i]) then
-			notmade = notmade-1
-		end
-	end
-	if notmade > 0 then
-		return true
-	end
-	return false
+
 end
 
 function table.copy(t, deep, seen)

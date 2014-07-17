@@ -19,23 +19,22 @@ LostState.this = this
 
 function LostState.load()
 	this.buttons = ButtonManager.new()
+	this.world = 1
+	this.levellost = 1
 end
-function LostState.enter()
+function LostState.enter(world, level)
 	this.buttons:removeAllButtons()
 	this.buttons:addCenterButton("tryagain", "Try again", -120*pixelscale)
-	if game.customlevel then
-		if SelCusLevelState.this.canPlayLevel( "next" ) then
-			this.buttons:addCenterButton("skip", "Skip level", 0)
-		end
-	else
-		if canPlayLevel(clvl.level+1, true) then
-			this.buttons:addCenterButton("skip", "Skip level", 0)
-		end
+	if LevelManager.canPlayLevel(world, level+1) then
+		this.buttons:addCenterButton("skip", "Skip level", 0)
 	end
 	this.buttons:addCenterButton("menu", "Return to menu", 80*pixelscale)
 	
 	this.anim = {prog = love.window.getHeight(), back=0}
 	this.animt = Tween.new(0.7, this.anim, {prog=0, back=100}, "outCubic")
+
+	this.world = world
+	this.levellost = level
 end
 function LostState.update(dt)
 	this.animt:update(dt)
@@ -57,25 +56,13 @@ end
 function LostState.mousepressed(x, y, button)
 	local clickedbutton = this.buttons:getClickedButton(x, y)
 	if clickedbutton == "tryagain" then
-		if game.customlevel then
-			this.animBack("game", "again")
-		else
-			this.animBack(function() loadLevel(clvl.level) end)
-		end
+		this.animBack("game", "again")
 	end
-	if clickedbutton == "skip" and canPlayLevel(clvl.level+1, true) then
-		if game.customlevel then
-			this.animBack("selectcustomlevel", "next")
-		else
-			this.animBack(function() loadLevel(clvl.level+1) end)
-		end
+	if clickedbutton == "skip" then
+		this.animBack("selectlevel", "next")
 	end
 	if clickedbutton == "menu" then
-		if game.customlevel then
-			this.animBack("selectcustomlevel", "rettomenu")
-		else
-			this.animBack("selectlevel")
-		end
+		this.animBack("selectlevel","rettomenu")
 	end
 end
 function this.animBack(func, x1, x2)

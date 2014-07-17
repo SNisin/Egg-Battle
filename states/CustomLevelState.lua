@@ -38,7 +38,7 @@ function CustomLevelsState.returned(val)
 		if this.selectedlevel > 0 then
 
 			local cuslevel = Tserial.unpack(val.world, true)
-			StateManager.setState("selectcustomlevel", cuslevel, this.selectedlevel)
+			StateManager.setState("selectlevel", cuslevel, this.selectedlevel, true)
 
 			--clvl.world = table.copy(cuslevel.world, true)
 			--clvl.level = 0
@@ -85,12 +85,7 @@ function CustomLevelsState.draw()
 
 		lg.print(v.plays.." times played", 5*pixelscale, posY+this.boxheight-5*pixelscale-smallfont:getHeight())
 
-		local numplayed = 0
-		if SaveManager.save.cusworlds and SaveManager.save.cusworlds[v.id] then
-			for i,v in ipairs(SaveManager.save.cusworlds[v.id]) do
-				if v then numplayed = numplayed+1 end
-			end
-		end
+		local numplayed = LevelManager.getWorldProgress(v.id, true)
 		lg.setColor(100,100,100)
 		local numlevelsY = posY+(this.boxheight-smallfont:getHeight())/2
 		if numplayed > 0 then

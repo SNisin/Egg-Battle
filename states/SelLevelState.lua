@@ -13,7 +13,7 @@
    limitations under the License.
 ]]
 
-local SelLevelState = {}
+SelLevelState = {}
 local this = {}
 SelLevelState.this = this
 
@@ -26,19 +26,46 @@ function SelLevelState.load()
 	this.buttonimg = RessourceManager.images.buttons.levelbutton
 	this.finishedimg =  RessourceManager.images.buttons.levelfinished
 	this.notavailableimg =  RessourceManager.images.buttons.levelnotavailable
+	this.playedlevel = 1
 
+	this.levels = LevelManager.worlds[1].levels
+	this.numlevels = LevelManager.getNumLevels(1)
+	this.worldId = 1
+
+	this.customlevels = false
 end
-function SelLevelState.enter()
-	SoundManager.playMusic("menu")
+function SelLevelState.enter(levels, worldid, customlevels)
+	if type(levels) == "table" then
+		this.levels = levels
+		this.numlevels = #levels
+		this.worldId = worldid
+		this.customlevels = customlevels
+	elseif type(levels) == "number" then
+		this.customlevels = false
+		this.levels = LevelManager.worlds[levels].levels
+		this.numlevels = LevelManager.getNumLevels(levels)
+		this.worldId = levels
+	elseif levels == "next" then
+		if this.levels[this.playedlevel+1] then
+			this.playedlevel = this.playedlevel+1
+			StateManager.setState("game", this.levels[this.playedlevel], this.playedlevel, this.worldId, this.customlevels)
+		end
+	else--if levels == "rettomenu" then
+		SoundManager.playMusic("menu")
+		this.playedlevel = 1
+	end
+
 	local numinrow, offs = this.getLevelVars()
-	local rows = math.floor((14)/numinrow)+1
+	local rows = math.floor((this.numlevels-1)/numinrow)+1
 	local contentheight = rows*(offs+BUTTON_HEIGHT)+offs
 
 	this.scroll = ScrollManager.new({
 		offTop = game.offY,
 		clickcallback = this.mouseclicked,
 		contentHeight = contentheight
-		})
+	})
+
+
 end
 function SelLevelState.update(dt)
 	this.scroll:update(dt)
@@ -46,7 +73,7 @@ end
 
 function SelLevelState.draw()
 	local numinrow, offs = this.getLevelVars()
-	for i = 1, 15 do
+	for i = 1, this.numlevels do
 		this.drawLevelButton(i, (i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY)
 	end
 	love.graphics.setColor(255,255,255,150)
@@ -62,24 +89,33 @@ function SelLevelState.mousepressed(x, y, button)
 end
 function this.mouseclicked(x, y, button)
 	if y > game.offY then
-		for i = 1, 15 do
+		for i = 1, this.numlevels do
 			local numinrow, offs = this.getLevelVars()
 			if ButtonManager.check((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY, BUTTON_WIDTH, BUTTON_HEIGHT) then
 				print("level "..i)
-				if canPlayLevel(i) then
-					loadLevel(15*(game.worldselected-1)+i)
+				if LevelManager.canPlayLevel(this.worldId, i, this.customlevels) then
+					this.playedlevel = i
+					StateManager.setState("game", this.levels[i], i, this.worldId, this.customlevels)
 				end
 			end
 		end
 	else
 		if ButtonManager.checkBackButton() then
-			StateManager.setState("selectworld")
+			if this.customlevels then
+				StateManager.setState("customlevels")
+			else
+				StateManager.setState("selectworld")
+			end
 		end
 	end
 end
 function SelLevelState.keypressed(k)
 	if k == "escape" then
-		StateManager.setState("selectworld")
+		if this.customlevels then
+			StateManager.setState("customlevels")
+		else
+			StateManager.setState("selectworld")
+		end
 	end
 end
 function SelLevelState.mousereleased(x, y, button)
@@ -87,18 +123,16 @@ function SelLevelState.mousereleased(x, y, button)
 end
 function SelLevelState.resize( width, height )
 	local numinrow, offs = this.getLevelVars()
-	local rows = math.floor((14)/numinrow)+1
+	local rows = math.floor((this.numlevels-1)/numinrow)+1
 	local contentheight = rows*(offs+BUTTON_HEIGHT)+offs
 	this.scroll:setContentHeight(contentheight)
 end
 function this.drawLevelButton(level, x, y)
 	local drawimg
-	if SaveManager.save.worlds and 
-	   SaveManager.save.worlds[game.worldselected] and 
-	   SaveManager.save.worlds[game.worldselected][level] then
+	if LevelManager.isLevelFinished(this.worldId, level, this.customlevels) then
 		drawimg = this.finishedimg
 
-	elseif canPlayLevel(level) then
+	elseif LevelManager.canPlayLevel(this.worldId, level, this.customlevels) then
 		drawimg = this.buttonimg
 		
 	else
@@ -120,6 +154,5 @@ function this.getLevelVars()
 	local offs = (love.graphics.getWidth()/numinrow-BUTTON_WIDTH)/2
 	return numinrow, offs
 end
-
 
 StateManager.registerState("selectlevel", SelLevelState)

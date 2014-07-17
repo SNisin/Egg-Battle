@@ -28,7 +28,7 @@ function EditorState.load()
 			{0,0,0,0,0}
 		},
 		taps=1,
-		level=#levels+1,
+		level=#LevelManager.worlds+1,
 		fsel=0
 	}
 	editmessage = ""

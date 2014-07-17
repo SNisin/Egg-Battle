@@ -31,14 +31,14 @@ end
 function SelWorldState.enter()
 	SoundManager.playMusic("menu")
 	local numinrow, offs = this.getWorldVars()
-	local rows = math.floor((math.floor(#levels/15)-1)/numinrow)+1
+	local rows = math.floor((math.floor(#LevelManager.worlds/15)-1)/numinrow)+1
 	local contentheight = rows*(offs+BUTTON_HEIGHT)+offs
 
 	this.scroll = ScrollManager.new({
 		offTop = game.offY,
 		clickcallback = this.mouseclicked,
 		contentHeight = contentheight
-		})
+	})
 end
 
 function SelWorldState.update(dt)
@@ -47,10 +47,11 @@ end
 
 function SelWorldState.draw()
 	local numinrow, offs = this.getWorldVars()
-	for i, v in ipairs(worlds) do
-		if i<=math.floor(#levels/15) then
-			this.drawWorldButton(i, (i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY)
-		end
+	for i, v in ipairs(LevelManager.worlds) do
+		this.drawWorldButton(i, v)
+		--if i<=math.floor(#levels/15) then
+			--this.drawWorldButton(i, (i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY)
+		--end
 	end
 	love.graphics.setColor(255,255,255,150)
 	local barimg = RessourceManager.images.bar
@@ -65,14 +66,11 @@ function SelWorldState.mousepressed(x, y, button)
 end
 function this.mouseclicked(x, y, button)
 	if y > game.offY then
-		for i, v in ipairs(worlds) do
-				if i<=math.floor(#levels/15) then
-				local numinrow, offs = this.getWorldVars()
-				if ButtonManager.check((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY, BUTTON_WIDTH, BUTTON_HEIGHT) then
-					print("world "..i)
-					game.worldselected = i
-					StateManager.setState("selectlevel")
-				end
+		for i, v in ipairs(LevelManager.worlds) do
+			local numinrow, offs = this.getWorldVars()
+			if ButtonManager.check((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY, BUTTON_WIDTH, BUTTON_HEIGHT) then
+				print("world "..i)
+				StateManager.setState("selectlevel", i)
 			end
 		end
 	else
@@ -95,31 +93,26 @@ function SelWorldState.resize(width, height)
 	local contentheight = rows*(offs+BUTTON_HEIGHT)+offs
 	this.scroll:setContentHeight(contentheight)
 end
-function this.drawWorldButton(world, x, y)
-	
-	local worldprog = 0
-	if SaveManager.save.worlds and SaveManager.save.worlds[world] then
-		for i, v in ipairs(SaveManager.save.worlds[world]) do
-			if v then
-				worldprog = worldprog + 1
-			end
-		end
-	else
-		worldprog = 0
-	end
+function this.drawWorldButton(worldnum, world)
+	local numinrow, offs = this.getWorldVars()
+	local x = (worldnum-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs
+	local y = math.floor((worldnum-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY
+
 	local drawimg = this.buttonimg
 	love.graphics.setColor(255,255,255,255)
 	love.graphics.draw(drawimg, x, y, 0, BUTTON_WIDTH/drawimg:getWidth(), BUTTON_HEIGHT/drawimg:getHeight())
 
 	love.graphics.setColor(0,160,160,255)
-	love.graphics.printf(world..". "..worlds[world], x+BUTTON_BORDER, y+10, BUTTON_WIDTH-BUTTON_BORDER*2, "center")
+	love.graphics.printf(worldnum..". "..world.name, x+BUTTON_BORDER, y+10, BUTTON_WIDTH-BUTTON_BORDER*2, "center")
 	
-	if worldprog >= 15 then
+	if LevelManager.isWorldFinished(worldnum) then
 		love.graphics.setColor(0,150,0,255)
 	else
 		love.graphics.setColor(0,0,0,255)
 	end
-	love.graphics.printf(worldprog.."/15", x, y+BUTTON_HEIGHT-10-font:getHeight(), BUTTON_WIDTH, "center")
+	local worldprog = LevelManager.getWorldProgress(worldnum)
+	local numlevels = LevelManager.getNumLevels(worldnum)
+	love.graphics.printf(worldprog.."/"..numlevels, x, y+BUTTON_HEIGHT-10-font:getHeight(), BUTTON_WIDTH, "center")
 end
 
 function this.getWorldVars()

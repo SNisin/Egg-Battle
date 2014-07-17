@@ -19,8 +19,10 @@ WonState.this = this
 
 function WonState.load()
 	this.buttons = ButtonManager.new()
+	this.world = 1
+	this.levelwon = 1
 end
-function WonState.enter()
+function WonState.enter(world, level)
 	this.buttons:removeAllButtons()
 	this.buttons:addCenterButton("next", "Next level", -120*pixelscale)
 	this.buttons:addCenterButton("tryagain", "Try again", 0)
@@ -28,14 +30,16 @@ function WonState.enter()
 	
 	this.anim = {prog = love.window.getHeight(), back=0}
 	this.animt = Tween.new(0.7, this.anim, {prog=0, back=100}, "outCubic")
+	this.world = world
+	this.levelwon = level
 end
 function WonState.draw()
 	love.graphics.setColor(0,50,50,this.anim.back)
 	love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 	love.graphics.setColor(0,0,0,255)
-	love.graphics.print("Level "..clvl.level.." succeeded", (love.graphics.getWidth()-font:getWidth("Level "..clvl.level.." succeeded"))/2+1, love.graphics.getHeight()/2-150*pixelscale+1+this.anim.prog)
+	love.graphics.print("Level succeeded", (love.graphics.getWidth()-font:getWidth("Level succeeded"))/2+1, love.graphics.getHeight()/2-150*pixelscale+1+this.anim.prog)
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.print("Level "..clvl.level.." succeeded", (love.graphics.getWidth()-font:getWidth("Level "..clvl.level.." succeeded"))/2, love.graphics.getHeight()/2-150*pixelscale+this.anim.prog)
+	love.graphics.print("Level succeeded", (love.graphics.getWidth()-font:getWidth("Level succeeded"))/2, love.graphics.getHeight()/2-150*pixelscale+this.anim.prog)
 	
 	this.buttons:draw(this.anim.prog)
 end
@@ -49,25 +53,13 @@ end
 function WonState.mousepressed(x, y, button)
 	local clickedbutton = this.buttons:getClickedButton(x, y)
 	if clickedbutton == "next" then
-		if game.customlevel then
-			this.animBack("selectcustomlevel", "next")
-		else
-			if (clvl.level-1)%15 == 14 then
-				this.animBack("selectworld")
-			else
-				this.animBack(function() loadLevel(clvl.level+1) end)
-			end
-		end
+		this.animBack("selectlevel", "next")
 	end
 	if clickedbutton == "tryagain" then
 		this.animBack("game", "again")
 	end
 	if clickedbutton == "menu" then
-		if game.customlevel then
-			this.animBack("selectcustomlevel", "rettomenu")
-		else
-			this.animBack("selectlevel")
-		end
+		this.animBack("selectlevel", "rettomenu")
 	end
 end
 function this.animBack(func, x1, x2)

@@ -21,8 +21,11 @@ function GameState.load()
 	this.eggs = RessourceManager.images.eggs
 	this.clvl = {}
 	this.origlevel = {}
+	this.worldId = 1
+	this.levelId = 1
+	this.customlevel = false
 end
-function GameState.enter( level )
+function GameState.enter( world, level, worldid, custom )
 	this.clvl = {
 		world={
 			{0,0,0,0,0},
@@ -33,15 +36,27 @@ function GameState.enter( level )
 			{0,0,0,0,0}
 		},
 		taps=0,
-		level=0,
 		projectiles = {}
 	}
-	if type(level) == "table" then
-		table.merge(this.clvl, level)
-	elseif level == "again" then
+	if type(world) == "table" then
+		table.merge(this.clvl, world)
+		this.worldId = worldid
+		this.levelId = level
+		this.customlevel = custom
+	elseif world == "again" then
 		this.clvl = table.copy(this.origlevel, true)
+	elseif type(level) == "number" then
+		if LevelManager.worlds[world].levels[level] then
+			this.clvl.world = table.copy(LevelManager.worlds[world].levels[level].world, true)
+			this.clvl.taps = LevelManager.worlds[world].levels[level].taps
+			this.worldId = world
+			this.levelId = level
+			this.customlevel = false
+		else
+			StateManager.setState("menu")
+		end
 	else
-		table.merge(this.clvl, clvl)
+		StateManager.setState("menu")
 	end
 	this.origlevel = table.copy(this.clvl, true)
 	SoundManager.playMusic("game")
@@ -69,31 +84,15 @@ function GameState.update(dt)
 			editmessageop = 255
 			
 			StateManager.setState("editor")
-		elseif game.customlevel then
-			StateManager.setState("won")
-			local world = SelCusLevelState.this.worldId
-			if not SaveManager.save.cusworlds then
-				SaveManager.save.cusworlds = {}
-			end
-			if not SaveManager.save.cusworlds[world] then
-				SaveManager.save.cusworlds[world] = {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false}
-			end
-			SaveManager.save.cusworlds[world][SelCusLevelState.this.playedlevel] = true
-			SaveManager.saveGame()
+
 		else
-			StateManager.setState("won")
-			local world = math.floor((this.clvl.level-1)/15)+1
-			if this.clvl.level > SaveManager.save.crnt then
-				SaveManager.save.crnt = this.clvl.level
-			end
-			if not SaveManager.save.worlds then
-				SaveManager.save.worlds = {}
-			end
-			if not SaveManager.save.worlds[world] then
-				SaveManager.save.worlds[world] = {false,false,false,false,false,false,false,false,false,false,false,false,false,false,false}
-			end
-			SaveManager.save.worlds[world][((this.clvl.level-1)%15)+1] = true
+			local world = this.worldId
+			local level = this.levelId
+			SaveManager.save.crnt = 1
+			LevelManager.setLevelSuccessed(world, level, this.customlevel)
 			SaveManager.saveGame()
+
+			StateManager.setState("won")
 		end
 	end
 	if #this.clvl.projectiles == 0 and not this.checkwin() and this.clvl.taps <= 0 then
@@ -104,7 +103,7 @@ function GameState.update(dt)
 		
 			StateManager.setState("editor")
 		else
-			StateManager.addState("lost")
+			StateManager.addState("lost", this.worldId, this.levelId)
 		end
 	end
 end
@@ -156,10 +155,8 @@ function GameState.keypressed(k)
 	if k == "escape" then
 		if game.editt then
 			StateManager.setState("editor")
-		elseif game.customlevel then
-			StateManager.setState("selectcustomlevel", "rettomenu")
 		else
-			StateManager.setState("selectworld")
+			StateManager.setState("selectlevel", "rettomenu")
 		end
 	end
 end

@@ -71,7 +71,7 @@ function MenuState.mousepressed(x, y, button)
 	local clickedbutton = this.buttons:getClickedButton(x, y)
 		
 	if clickedbutton == "start" then
-		loadLevel(1)
+		StateManager.setState("game", 1, 1)
 	end
 
 	if clickedbutton == "continue" then
