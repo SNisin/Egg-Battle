@@ -76,7 +76,7 @@ function SelLevelState.draw()
 	for i = 1, this.numlevels do
 		this.drawLevelButton(i, (i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY)
 	end
-	love.graphics.setColor(255,255,255,150)
+	love.graphics.setColor(255,255,255,255)
 	local barimg = RessourceManager.images.bar
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
 	ButtonManager.drawBackButton()

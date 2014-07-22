@@ -31,9 +31,9 @@ end
 function SelWorldState.enter()
 	SoundManager.playMusic("menu")
 	local numinrow, offs = this.getWorldVars()
-	local rows = math.floor((math.floor(#LevelManager.worlds/15)-1)/numinrow)+1
+	local rows = math.floor(#LevelManager.worlds/numinrow)
 	local contentheight = rows*(offs+BUTTON_HEIGHT)+offs
-
+	
 	this.scroll = ScrollManager.new({
 		offTop = game.offY,
 		clickcallback = this.mouseclicked,
@@ -53,7 +53,7 @@ function SelWorldState.draw()
 			--this.drawWorldButton(i, (i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY)
 		--end
 	end
-	love.graphics.setColor(255,255,255,150)
+	love.graphics.setColor(255,255,255,255)
 	local barimg = RessourceManager.images.bar
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
 	ButtonManager.drawBackButton()
@@ -89,7 +89,7 @@ function SelWorldState.mousereleased(x, y, button)
 end
 function SelWorldState.resize(width, height)
 	local numinrow, offs = this.getWorldVars()
-	local rows = math.floor((math.floor(#levels/15)-1)/numinrow)+1
+	local rows = math.floor(#LevelManager.worlds/numinrow)
 	local contentheight = rows*(offs+BUTTON_HEIGHT)+offs
 	this.scroll:setContentHeight(contentheight)
 end

@@ -125,7 +125,7 @@ function GameState.draw()
 		love.graphics.setColor(0,0,0,255)
 		love.graphics.circle("line", v.x, v.y+game.offY, 5*game.scale)
 	end
-	love.graphics.setColor(255,255,255,150)
+	love.graphics.setColor(255,255,255,255)
 	local barimg = RessourceManager.images.bar
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
 	

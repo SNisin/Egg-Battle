@@ -100,9 +100,10 @@ function CustomLevelsState.draw()
 	end
 	this.scroll:drawScrollBar()
 
-	lg.setColor(255,255,255,150)
+	lg.setColor(255,255,255,255)
 	local barimg = RessourceManager.images.bar
 	lg.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
+
 	ButtonManager.drawBackButton()
 end
 function this.mouseclicked(x, y)
