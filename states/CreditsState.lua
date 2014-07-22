@@ -26,7 +26,7 @@ function CreditsState.load()
 		[1] = font,
 		[2] = love.graphics.newFont("gfx/font.ttf",math.floor(30*pixelscale))
 	}
-	
+
 	creditLines = {
 		{text="Programming", size=2, wrap=2},
 		{text="Joemag", size=1, wrap=4},
@@ -71,7 +71,7 @@ function CreditsState.enter()
 		autoscrolltime = 3,
 		offTop = game.offY,
 		clickcallback = this.mouseclicked
-		})
+	})
 end
 function CreditsState.update(dt)
 	this.scroll:update(dt)

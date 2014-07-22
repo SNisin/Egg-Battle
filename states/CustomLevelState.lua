@@ -39,13 +39,6 @@ function CustomLevelsState.returned(val)
 
 			local cuslevel = Tserial.unpack(val.world, true)
 			StateManager.setState("selectlevel", cuslevel, this.selectedlevel, true)
-
-			--clvl.world = table.copy(cuslevel.world, true)
-			--clvl.level = 0
-			--clvl.taps = cuslevel.taps
-			--clvl.projectiles = {}
-			--StateManager.setState("game")
-			--game.customt = true
 		else
 			this.levelList = val
 			this.scroll:setContentHeight(#val*this.boxheight)

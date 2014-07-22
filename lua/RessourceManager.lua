@@ -44,7 +44,9 @@ function RessourceManager.load()
 			levelfinished 		= love.graphics.newImage("gfx/buttons/levelfinished.png"),
 			levelnotavailable 	= love.graphics.newImage("gfx/buttons/levelnotavailable.png"),
 
-			reset = love.graphics.newImage("gfx/reset.png")
+			reset = love.graphics.newImage("gfx/reset.png"),
+
+			moremenu = love.graphics.newImage("gfx/menu.png")
 		},
 		logo 		= love.graphics.newImage("gfx/logo.png"),
 		background 	= love.graphics.newImage("gfx/back.png"),

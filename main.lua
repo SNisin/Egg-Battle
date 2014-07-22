@@ -39,7 +39,6 @@ require("states.SelLevelState")
 require("states.CreditsState")
 require("states.CustomLevelState")
 require("states.DownloadState")
---require("states.SelCusLevelState")
 
 local AllState = {}
 function AllState.load()
@@ -61,8 +60,7 @@ function AllState.load()
 	pixelscale = love.window.getPixelScale()
 	font = love.graphics.newFont("gfx/font.ttf",math.floor(20*pixelscale))
 	smallfont = love.graphics.newFont("gfx/font.ttf",math.floor(13*pixelscale))
-	game = {
-	}
+	game = {}
 	game.worldselected = 1
 	
 	love.graphics.setFont(font)
@@ -113,12 +111,6 @@ function updateGraphics()
 	game.eggofX = (game.tilew-eggs[1]:getWidth()*game.scale)/2
 	game.eggofY = (game.tileh-eggs[1]:getHeight()*game.scale)/2
 	
-
-	--table.insert(clouds, {x=500*backscale, y=20*backscale, type=2, speed=36*backscale, op=120})
-	--table.insert(clouds, {x=944*backscale, y=70*backscale, type=2, speed=67*backscale, op=120})
-	--table.insert(clouds, {x=0*backscale, y=67*backscale, type=2, speed=115*backscale, op=120})
-	--table.insert(clouds, {x=732*backscale, y=87*backscale, type=2, speed=97*backscale, op=120})
-	--table.insert(clouds, {x=123*backscale, y=17*backscale, type=2, speed=136*backscale, op=120})
 end
 function canPlayLevel(level, all)
 
