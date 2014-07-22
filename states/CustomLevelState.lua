@@ -18,7 +18,7 @@ local this = {}
 CustomLevelsState.this = this
 
 function CustomLevelsState.load()
-	this.levelList = nil
+	this.levelList = {}
 	this.scroll = ScrollManager.new({
 		offTop = game.offY,
 		clickcallback = this.mouseclicked,
@@ -27,9 +27,9 @@ function CustomLevelsState.load()
 	this.selectedlevel = 0
 end
 function CustomLevelsState.enter()
-	this.levelList = nil
+	this.levelList = {}
 	this.selectedlevel = 0
-	StateManager.addState("download", "http://eggbattle.bplaced.net/getList.php", "Getting list...")
+	StateManager.addState("download", "http://eggbattle.bplaced.net/getList.php", "Getting list...", CustomLevelsState)
 end
 function CustomLevelsState.returned(val)
 
@@ -58,7 +58,6 @@ function CustomLevelsState.update(dt)
 	this.scroll:update(dt)
 end
 function CustomLevelsState.draw()
-	if not this.levelList then return end
 	local lg = love.graphics
 	for i,v in ipairs(this.levelList) do
 		local posY = (i-1)*this.boxheight-this.scroll.scrollY
@@ -111,11 +110,11 @@ function this.mouseclicked(x, y)
 		if ButtonManager.checkBackButton(x, y) then
 			StateManager.setState("menu")
 		end
-	else
+	elseif this.selectedlevel == 0 then
 		local clickedlevel = math.floor((y+this.scroll.scrollY)/this.boxheight)+1
 		if this.levelList[clickedlevel] then
 			this.selectedlevel = clickedlevel
-			StateManager.addState("download", "http://eggbattle.bplaced.net/getLevel.php?id="..this.levelList[clickedlevel].id, "Downloading level...")
+			StateManager.addState("download", "http://eggbattle.bplaced.net/getLevel.php?id="..this.levelList[clickedlevel].id, "Downloading level...", CustomLevelsState)
 		end
 	end
 end

@@ -18,10 +18,12 @@ local this = {}
 DownloadState.this = this
 function DownloadState.load()
 this.downfile = nil
+this.callbacks = {}
 end
-function DownloadState.enter(downloadURL, text)
+function DownloadState.enter(downloadURL, text, callbacks)
 	this.downfile = DownloadManager.new(downloadURL)
 	this.text = text
+	this.callbacks = callbacks or {}
 end
 function DownloadState.update(dt)
 	this.downfile:update()
@@ -68,9 +70,18 @@ function DownloadState.threaderror(thread, errorstr )
 			StateManager.retBack(retcont)
 end
 function DownloadState.mousepressed(x, y, button)
-	
+	if this.callbacks.mousepressed then
+		this.callbacks.mousepressed(x, y, button)
+	end
 end
 function DownloadState.mousereleased(x, y, button)
-	
+	if this.callbacks.mousereleased then
+		this.callbacks.mousereleased(x, y, button)
+	end
+end
+function DownloadState.keypressed(k)
+	if this.callbacks.keypressed then
+		this.callbacks.keypressed(k)
+	end
 end
 StateManager.registerState("download", DownloadState)
