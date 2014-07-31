@@ -12,6 +12,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 ]]
+GAMEVERSION = "2.0 alpha 1.0"
+
 
 -- Managers
 ButtonManager 		= require("lua.ButtonManager")
@@ -23,6 +25,7 @@ SaveManager			= require("lua.SaveManager")
 RessourceManager	= require("lua.RessourceManager")
 DownloadManager		= require("lua.DownloadManager")
 LevelManager		= require("lua.LevelManager")
+ErrorManager		= require("lua.ErrorManager")
 
 -- Libraries
 Tween = require("libs.tween")
@@ -70,7 +73,6 @@ function AllState.load()
 	LevelManager.load()
 	updateGraphics()
 	BackgroundManager.load()
-
 end
 function AllState.update( dt )
 	SoundManager.update(dt)
