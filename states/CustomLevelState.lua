@@ -21,6 +21,7 @@ function CustomLevelsState.load()
 	this.levelList = {}
 	this.scroll = ScrollManager.new({
 		offTop = game.offY,
+		offBottom = game.offY,
 		clickcallback = this.mouseclicked,
 	})
 	this.boxheight = 100*pixelscale
@@ -103,12 +104,28 @@ function CustomLevelsState.draw()
 	local barimg = RessourceManager.images.bar
 	lg.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
 
+	local barpos = lg.getHeight()-(50*pixelscale)
+
+	lg.setColor(94,206,255,228)
+	lg.rectangle("fill", 0, barpos+3, lg.getWidth(), (50*pixelscale))
+
+	lg.setColor(74,183,226,228)
+	lg.rectangle("fill", 0, barpos, lg.getWidth(), 3)
+
+	lg.setColor(255,255,255,255)
+	lg.printf("Create", 5*pixelscale, barpos+((50*pixelscale)-font:getHeight())/2, lg.getWidth()-10*pixelscale, "right")
+
 	ButtonManager.drawBackButton()
 end
 function this.mouseclicked(x, y)
-	if y < game.offY then
+	local lg = love.graphics
+	if y < game.offY or y > lg.getHeight()-game.offY then
 		if ButtonManager.checkBackButton(x, y) then
 			StateManager.setState("menu")
+		end
+		if ButtonManager.check(lg.getWidth()-font:getWidth("Create")-10*pixelscale, lg.getHeight()-(50*pixelscale), lg.getWidth(), game.offY, x, y) then
+			print("[customlevel] clicked create")
+			StateManager.setState("myworlds")
 		end
 	elseif this.selectedlevel == 0 then
 		local clickedlevel = math.floor((y+this.scroll.scrollY)/this.boxheight)+1

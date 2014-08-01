@@ -83,6 +83,9 @@ function StateManager.setAlwaysState(name, ...)
 end
 
 function StateManager.setState(name, ...)
+	if not _allStates[name] then
+		error("State '"..name.."' doesn't exist.")
+	end
 	_currentStates = {[1] = name}
 	callEnterCallback(name, ...)
 end

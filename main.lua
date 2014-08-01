@@ -42,6 +42,7 @@ require("states.SelLevelState")
 require("states.CreditsState")
 require("states.CustomLevelState")
 require("states.DownloadState")
+require("states.MyWorldsState")
 
 local AllState = {}
 function AllState.load()

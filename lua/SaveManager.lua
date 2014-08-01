@@ -5,6 +5,7 @@ SaveManager.save = {
 	worlds = {
 		--[1] = {true,true,true,true,true,true,true,true,true,true,true,true,true,true,true}
 	},
+	myworlds = {},
 	crnt = 0,
 	mute = false
 }
