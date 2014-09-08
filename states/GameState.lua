@@ -23,7 +23,7 @@ function GameState.load()
 	this.origlevel = {}
 	this.worldId = 1
 	this.levelId = 1
-	this.customlevel = false
+	this.customlevel = "no"
 end
 function GameState.enter( world, level, worldid, custom )
 	this.clvl = {
@@ -51,7 +51,7 @@ function GameState.enter( world, level, worldid, custom )
 			this.clvl.taps = LevelManager.worlds[world].levels[level].taps
 			this.worldId = world
 			this.levelId = level
-			this.customlevel = false
+			this.customlevel = "no"
 		else
 			StateManager.setState("menu")
 		end

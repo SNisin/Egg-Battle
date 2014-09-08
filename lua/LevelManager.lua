@@ -27,8 +27,11 @@ function LevelManager.load()
 end
 
 function LevelManager.getWorldProgress(world, custom)
-	if custom then
+	if custom == "custom" then
 		world = "cus_"..world
+	end
+	if custom == "myworld" then
+		return 0
 	end
 	local worldprog = 0
 	if SaveManager.save.worlds and SaveManager.save.worlds[world] then
@@ -43,8 +46,11 @@ function LevelManager.getWorldProgress(world, custom)
 	return worldprog
 end
 function LevelManager.canPlayLevel(world, level, custom)
-	if custom then
+	if custom == "custom" then
 		world = "cus_"..world
+	end
+	if custom == "myworld" then
+		return true
 	end
 	if SaveManager.save.worlds and 
 	   SaveManager.save.worlds[world] and 
@@ -66,8 +72,11 @@ function LevelManager.canPlayLevel(world, level, custom)
 end
 function LevelManager.setLevelSuccessed(world, level, custom)
 	print(world, level, custom)
-	if custom then
+	if custom == "custom" then
 		world = "cus_"..world
+	end
+	if custom == "myworld" then
+		return
 	end
 	if not SaveManager.save.worlds then
 		SaveManager.save.worlds = {}
@@ -79,8 +88,11 @@ function LevelManager.setLevelSuccessed(world, level, custom)
 	SaveManager.saveGame()
 end
 function LevelManager.isLevelFinished(world, level, custom)
-	if custom then
+	if custom == "custom" then
 		world = "cus_"..world
+	end
+	if custom == "myworld" then
+		return false
 	end
 	if SaveManager.save.worlds and 
 	   SaveManager.save.worlds[world] and 
@@ -90,7 +102,7 @@ function LevelManager.isLevelFinished(world, level, custom)
 		return false
 	end
 end
-function LevelManager.isWorldFinished(world, custom)
+function LevelManager.isWorldFinished(world)
 	local worldprog = LevelManager.getWorldProgress(world)
 	local numlevels = LevelManager.getNumLevels(world)
 

@@ -28,6 +28,7 @@ function MyWorldsState.load()
 	BUTTON_BORDER = 10*pixelscale
 	this.buttonimg = RessourceManager.images.buttons.worldbutton
 	this.levels = SaveManager.save.myworlds
+	this.selectedworld = 1
 end
 function MyWorldsState.enter()
 	SoundManager.playMusic("menu")
@@ -74,7 +75,15 @@ function this.mouseclicked(x, y, button)
 			if ButtonManager.check((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY, BUTTON_WIDTH, BUTTON_HEIGHT) then
 				print("[myworlds] world "..i)
 				hit = true
-				StateManager.setState("selectlevel", i)
+				this.selectedworld = i
+				StateManager.addState("selection", 
+					{
+						{ret="edit",t="Edit"},
+						{ret="play",t="Play"},
+						{ret="rename",t="Rename"}, 
+						{ret="delete",t="Delete"}
+					})
+				return
 			end
 		end
 		if not hit then
@@ -82,7 +91,12 @@ function this.mouseclicked(x, y, button)
 			local numinrow, offs = this.getWorldVars()
 			if ButtonManager.check((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY, BUTTON_WIDTH, BUTTON_HEIGHT) then
 				print("[myworlds] new world")
-				--StateManager.setState("selectlevel", i)
+				this.levels[i] = {
+					name = "New World "..i,
+					levels = {}
+				}
+				SaveManager.saveGame()
+				StateManager.setState("selectlevel", "myworld", i)
 			end
 		end
 	else
@@ -104,6 +118,21 @@ function MyWorldsState.resize(width, height)
 	local rows = math.floor(#this.levels/numinrow)
 	local contentheight = rows*(offs+BUTTON_HEIGHT)+offs
 	this.scroll:setContentHeight(contentheight)
+end
+function MyWorldsState.returned(selection)
+	if selection then
+		
+		if selection == "edit" then
+			StateManager.setState("selectlevel", "myworld", this.selectedworld)
+		elseif selection == "play" then
+			StateManager.setState("selectlevel", "myworldplay", this.selectedworld)
+		elseif selection == "rename" then
+
+		elseif selection == "delete" then
+			table.remove(this.levels, this.selectedworld)
+			SaveManager.saveGame()
+		end
+	end
 end
 function this.drawWorldButton(worldnum, world, addworld)
 	local numinrow, offs = this.getWorldVars()

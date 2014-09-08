@@ -39,7 +39,7 @@ function CustomLevelsState.returned(val)
 		if this.selectedlevel > 0 then
 
 			local cuslevel = Tserial.unpack(val.world, true)
-			StateManager.setState("selectlevel", cuslevel, this.selectedlevel, true)
+			StateManager.setState("selectlevel", cuslevel, this.selectedlevel, "custom")
 		else
 			this.levelList = val
 			this.scroll:setContentHeight(#val*this.boxheight)
