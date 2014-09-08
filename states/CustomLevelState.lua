@@ -78,7 +78,7 @@ function CustomLevelsState.draw()
 
 		lg.print(v.plays.." times played", 5*pixelscale, posY+this.boxheight-5*pixelscale-smallfont:getHeight())
 
-		local numplayed = LevelManager.getWorldProgress(v.id, true)
+		local numplayed = LevelManager.getWorldProgress(v.id, "custom")
 		lg.setColor(100,100,100)
 		local numlevelsY = posY+(this.boxheight-smallfont:getHeight())/2
 		if numplayed > 0 then

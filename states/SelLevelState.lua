@@ -39,7 +39,7 @@ function SelLevelState.enter(levels, worldid, customlevels)
 		this.levels = levels
 		this.numlevels = #levels
 		this.worldId = worldid
-		this.customlevels = customlevels
+		this.customlevels = customlevels or "no"
 	elseif type(levels) == "number" then
 		this.customlevels = "no"
 		this.levels = LevelManager.worlds[levels].levels
