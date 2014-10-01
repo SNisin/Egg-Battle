@@ -125,7 +125,7 @@ function MyWorldsState.returned(selection)
 		if selection == "edit" then
 			StateManager.setState("selectlevel", "myworld", this.selectedworld)
 		elseif selection == "play" then
-			StateManager.setState("selectlevel", "myworldplay", this.selectedworld)
+			StateManager.setState("selectlevel", "playmyworld", this.selectedworld)
 		elseif selection == "rename" then
 
 		elseif selection == "delete" then

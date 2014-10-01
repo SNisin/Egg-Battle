@@ -30,7 +30,7 @@ function LevelManager.getWorldProgress(world, custom)
 	if custom == "custom" then
 		world = "cus_"..world
 	end
-	if custom == "myworld" then
+	if custom == "myworld" or custom == "playmyworld" then
 		return 0
 	end
 	local worldprog = 0
@@ -49,7 +49,7 @@ function LevelManager.canPlayLevel(world, level, custom)
 	if custom == "custom" then
 		world = "cus_"..world
 	end
-	if custom == "myworld" then
+	if custom == "myworld" or custom == "playmyworld" then
 		return true
 	end
 	if SaveManager.save.worlds and 
@@ -75,7 +75,7 @@ function LevelManager.setLevelSuccessed(world, level, custom)
 	if custom == "custom" then
 		world = "cus_"..world
 	end
-	if custom == "myworld" then
+	if custom == "myworld" or custom == "playmyworld" then
 		return
 	end
 	if not SaveManager.save.worlds then
@@ -91,7 +91,7 @@ function LevelManager.isLevelFinished(world, level, custom)
 	if custom == "custom" then
 		world = "cus_"..world
 	end
-	if custom == "myworld" then
+	if custom == "myworld" or custom == "playmyworld" then
 		return false
 	end
 	if SaveManager.save.worlds and 

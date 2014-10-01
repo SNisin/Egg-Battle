@@ -46,12 +46,14 @@ function SelLevelState.enter(levels, worldid, customlevels)
 		this.numlevels = LevelManager.getNumLevels(levels)
 		this.worldId = levels
 	elseif levels == "next" then
-		if this.levels[this.playedlevel+1] then
-			this.playedlevel = this.playedlevel+1
-			StateManager.setState("game", this.levels[this.playedlevel], this.playedlevel, this.worldId, this.customlevels)
+		if this.customlevels ~= "myworld" then
+			if this.levels[this.playedlevel+1] then
+				this.playedlevel = this.playedlevel+1
+				StateManager.setState("game", this.levels[this.playedlevel], this.playedlevel, this.worldId, this.customlevels)
+			end
 		end
-	elseif levels == "myworld" then
-		this.customlevels = "myworld"
+	elseif levels == "myworld" or levels == "playmyworld" then
+		this.customlevels = levels
 		this.worldId = worldid
 		this.levels = SaveManager.save.myworlds[worldid].levels
 		this.numlevels = #this.levels
@@ -106,17 +108,31 @@ function this.mouseclicked(x, y, button)
 		for i = 1, this.numlevels do
 			if ButtonManager.check((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY, BUTTON_WIDTH, BUTTON_HEIGHT) then
 				print("level "..i)
-				if LevelManager.canPlayLevel(this.worldId, i, this.customlevels) then
+				if this.customlevels == "myworld" then
+					this.playedlevel = i
+					StateManager.addState("selection", 
+					{
+						{ret="edit",t="Edit"},
+						{ret="play",t="Play"},
+						{ret="move",t="Move"}, 
+						{ret="delete",t="Delete"}
+					})
+				elseif LevelManager.canPlayLevel(this.worldId, i, this.customlevels) then
 					this.playedlevel = i
 					StateManager.setState("game", this.levels[i], i, this.worldId, this.customlevels)
 					return
 				end
 			end
 		end
-		local i = this.numlevels+1
-		if ButtonManager.check((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY, BUTTON_WIDTH, BUTTON_HEIGHT) then
-			print("add level "..i)
-			table.insert(this.levels, {world={{0,0,0,0,0},{0,1,0,1,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}},taps=1})
+		if this.customlevels == "myworld" then
+			local i = this.numlevels+1
+			if ButtonManager.check((i-1)%numinrow*(love.graphics.getWidth()/numinrow)+offs, math.floor((i-1)/numinrow)*(BUTTON_HEIGHT+offs)+offs-this.scroll.scrollY, BUTTON_WIDTH, BUTTON_HEIGHT) then
+				print("add level "..i)
+				table.insert(this.levels, {world={{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}},taps=1})
+				this.numlevels = #this.levels
+				SaveManager.saveGame()
+				StateManager.setState("editor", "edit", this.worldId, i)
+			end
 		end
 	else
 		if ButtonManager.checkBackButton() then
@@ -124,7 +140,7 @@ function this.mouseclicked(x, y, button)
 				StateManager.setState("customlevels")
 			elseif this.customlevels == "no" then
 				StateManager.setState("selectworld")
-			elseif this.customlevels == "myworld" then
+			elseif this.customlevels == "myworld" or this.customlevels == "playmyworld" then
 				StateManager.setState("myworlds")
 			end
 		end
@@ -152,6 +168,20 @@ function SelLevelState.resize( width, height )
 	end
 	local contentheight = rows*(offs+BUTTON_HEIGHT)+offs
 	this.scroll:setContentHeight(contentheight)
+end
+function SelLevelState.returned( selection )
+	if this.customlevels == "myworld" then
+		if selection == "edit" then
+			StateManager.setState("editor", "edit", this.worldId, this.playedlevel)
+		elseif selection == "play" then
+			StateManager.setState("game", this.levels[this.playedlevel], this.playedlevel, this.worldId, this.customlevels)
+		elseif selection == "move" then
+
+		elseif selection == "delete" then
+			table.remove(this.levels, this.playedlevel)
+			this.numlevels = #this.levels
+		end
+	end
 end
 function this.drawLevelButton(level, x, y)
 	local drawimg

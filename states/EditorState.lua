@@ -23,23 +23,30 @@ function EditorState.load()
 	this.message = ""
 	this.messageop = 0
 	this.menubutton = RessourceManager.images.buttons.moremenu
+
+	this.changedAfterSaving = false
+
+	this.myworldid = 0
+	this.levelid = 0
 end
-function EditorState.enter(action, message)
+function EditorState.enter(action, message1, message2)
 	if action == "return" then
 		this.message = message
 		this.messageop = 255
 	elseif action == "edit" then
-		-- Not implemented yet
+		if SaveManager.save.myworlds[message1] and SaveManager.save.myworlds[message1].levels[message2] then
+			this.myworldid = message1
+			this.levelid = message2
+			this.world = table.copy(SaveManager.save.myworlds[message1].levels[message2].world)
+			this.taps = SaveManager.save.myworlds[message1].levels[message2].taps
+
+			this.changedAfterSaving = false
+		else
+			StateManager.setState("menu")
+		end
+		
 	else
-		this.world = {
-			{0,0,0,0,0},
-			{0,0,0,0,0},
-			{0,0,0,0,0},
-			{0,0,0,0,0},
-			{0,0,0,0,0},
-			{0,0,0,0,0}
-		}
-		this.taps=0
+		StateManager.setState("menu")
 	end
 end
 
@@ -114,6 +121,12 @@ end
 
 function EditorState.keypressed(k)
 	
+end
+
+function this.save()
+	SaveManager.save.myworlds[this.myworldid].levels[this.levelid].world = table.copy(this.world)
+	SaveManager.save.myworlds[this.myworldid].levels[this.levelid].taps = this.taps
+	SaveManager.saveGame()
 end
 
 
