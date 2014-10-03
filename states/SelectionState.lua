@@ -49,6 +49,10 @@ function SelectionState.draw()
 	lg.setColor(0,0,0)
 
 	for i,v in pairs(this.entries) do
+		if not v.ret then
+			lg.setColor(255,255,220)
+			lg.rectangle("fill", rx+1, ry+(i-1)*BUTTON_HEIGHT, rw-2, BUTTON_HEIGHT)
+		end
 		lg.setColor(0,0,0)
 		lg.printf(v.t, rx, ry+(i-1)*BUTTON_HEIGHT+textOffY, rw, "center")
 		lg.setColor(175,129,75)
@@ -66,8 +70,11 @@ function SelectionState.mousereleased(x, y, button)
 	if x > rx and x < rx+rw and y > ry and y < ry+rh then
 		for i,v in pairs(this.entries) do
 			if y > ry + (i-1)*BUTTON_HEIGHT and y < ry + (i)*BUTTON_HEIGHT then
-				print("[selection] return: "..tostring(v.ret))
-				StateManager.retBack(v.ret)
+				if v.ret then
+					print("[selection] return: "..tostring(v.ret))
+					StateManager.retBack(v.ret)
+				end
+				break
 			end
 		end
 	else

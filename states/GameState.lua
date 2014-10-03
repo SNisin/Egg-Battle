@@ -79,11 +79,8 @@ function GameState.update(dt)
 	end
 	if this.checkwin() then
 		SoundManager.playSound("win", true)
-		if game.editt then
-			editmessage = "WON!"
-			editmessageop = 255
-			
-			StateManager.setState("editor")
+		if this.customlevel == "edit" then
+			StateManager.setState("editor", "return", "You won")
 
 		else
 			local world = this.worldId
@@ -97,11 +94,8 @@ function GameState.update(dt)
 	end
 	if #this.clvl.projectiles == 0 and not this.checkwin() and this.clvl.taps <= 0 then
 		SoundManager.playSound("lost", true)
-		if game.editt then
-			editmessage = "LOST!"
-			editmessageop = 255
-		
-			StateManager.setState("editor")
+		if this.customlevel == "edit" then
+			StateManager.setState("editor", "return", "You lost")
 		else
 			StateManager.addState("lost", this.worldId, this.levelId)
 		end
