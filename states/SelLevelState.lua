@@ -178,8 +178,18 @@ function SelLevelState.returned( selection )
 		elseif selection == "move" then
 
 		elseif selection == "delete" then
+			StateManager.addState("selection", 
+				{	
+					{t="Are you sure you want to delete this level?"},
+					{ret="yesdelete",t="Yes"},
+					{ret="nodelete",t="No"}
+				})
+		elseif selection == "yesdelete" then
 			table.remove(this.levels, this.playedlevel)
 			this.numlevels = #this.levels
+			SaveManager.saveGame()
+		elseif selection == "nodelete" then
+
 		end
 	end
 end
