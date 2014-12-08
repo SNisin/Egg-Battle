@@ -88,8 +88,9 @@ function GameState.update(dt)
 			SaveManager.save.crnt = 1
 			LevelManager.setLevelSuccessed(world, level, this.customlevel)
 			SaveManager.saveGame()
-
-			StateManager.setState("won")
+			
+			this.clvl.projectiles = {}
+			StateManager.addState("won")
 		end
 	end
 	if #this.clvl.projectiles == 0 and not this.checkwin() and this.clvl.taps <= 0 then
@@ -147,8 +148,8 @@ end
 
 function GameState.keypressed(k)
 	if k == "escape" then
-		if game.editt then
-			StateManager.setState("editor")
+		if this.customlevel == "edit" then
+			StateManager.setState("editor", "return")
 		else
 			StateManager.setState("selectlevel", "rettomenu")
 		end

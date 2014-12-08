@@ -31,7 +31,7 @@ function EditorState.load()
 end
 function EditorState.enter(action, message1, message2)
 	if action == "return" then
-		this.message = message1
+		this.message = message1 or ""
 		this.messageop = 255
 	elseif action == "edit" then
 		if SaveManager.save.myworlds[message1] and SaveManager.save.myworlds[message1].levels[message2] then
@@ -48,6 +48,7 @@ function EditorState.enter(action, message1, message2)
 	else
 		StateManager.setState("menu")
 	end
+	SoundManager.playMusic("game")
 end
 
 function EditorState.update(dt)

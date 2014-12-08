@@ -18,67 +18,82 @@ local this = {}
 SelectionState.this = this
 
 local BUTTON_WIDTH = 0
-local BUTTON_HEIGHT = 0
 local lg = love.graphics
 
 function SelectionState.load()
 	BUTTON_WIDTH = 300*pixelscale
-	BUTTON_HEIGHT = 60*pixelscale
+	BUTTON_BORDER = 20
 	this.entries = {}
+	this.fEntries = {}
+	this.boxHeight = 0
+	this.boxWidth = 0
+	this.boxX = 0
+	this.boxY = 0
 end
 function SelectionState.enter(entries)
 	this.entries = entries
+	this.updateBox()
 end
 
 function SelectionState.draw()
 	lg.setColor(128,128,128,128)
 	lg.rectangle("fill", 0,0,lg.getWidth(),lg.getHeight())
 
-	local rw = math.min(lg.getWidth()-4, BUTTON_WIDTH)
-	local rh = BUTTON_HEIGHT * #this.entries
-	
-	local rx = (lg.getWidth()-rw)/2
-	local ry = (lg.getHeight()-rh)/2
+	--lg.setColor(248,232,176) fill
+	--lg.setColor(175,129,75) line
+	--lg.setColor(255,255,220) note
 
-	local textOffY = (BUTTON_HEIGHT-font:getHeight())/2
+	for i,v in pairs(this.fEntries) do
 
-	lg.setColor(248,232,176)
-	lg.rectangle("fill", rx, ry, rw, rh)
-	lg.setColor(175,129,75)
-	lg.rectangle("line", rx, ry, rw, rh)
-	lg.setColor(0,0,0)
-
-	for i,v in pairs(this.entries) do
 		if not v.ret then
 			lg.setColor(255,255,220)
-			lg.rectangle("fill", rx+1, ry+(i-1)*BUTTON_HEIGHT, rw-2, BUTTON_HEIGHT)
+		else
+			lg.setColor(248,232,176)
 		end
-		lg.setColor(0,0,0)
-		lg.printf(v.t, rx, ry+(i-1)*BUTTON_HEIGHT+textOffY, rw, "center")
+		lg.rectangle("fill", this.boxX, this.boxY+v.y, v.w, v.h)
 		lg.setColor(175,129,75)
-		lg.line(rx, ry+i*BUTTON_HEIGHT, rx+rw, ry+i*BUTTON_HEIGHT)
+		lg.rectangle("line", this.boxX, this.boxY+v.y, v.w, v.h)
+
+		lg.setColor(0,0,0)
+		lg.setFont(font)
+		lg.printf(v.t, this.boxX+BUTTON_BORDER, this.boxY+v.y+BUTTON_BORDER, v.w-BUTTON_BORDER*2, "center")
 
 	end
 end
 function SelectionState.mousereleased(x, y, button)
-	local rw = math.min(lg.getWidth()-4, BUTTON_WIDTH)
-	local rh = BUTTON_HEIGHT * #this.entries
-	
-	local rx = (lg.getWidth()-rw)/2
-	local ry = (lg.getHeight()-rh)/2
-
-	if x > rx and x < rx+rw and y > ry and y < ry+rh then
-		for i,v in pairs(this.entries) do
-			if y > ry + (i-1)*BUTTON_HEIGHT and y < ry + (i)*BUTTON_HEIGHT then
-				if v.ret then
-					print("[selection] return: "..tostring(v.ret))
-					StateManager.retBack(v.ret)
-				end
-				break
-			end
+	for i,v in ipairs(this.fEntries) do
+		if v.ret and ButtonManager.check(this.boxX, this.boxY+v.y, v.w, v.h, x, y) then
+			print("[selection] return: "..v.ret)
+			StateManager.retBack(v.ret)
+			return
 		end
-	else
+	end
+	print("[selection] return: nil")
+	StateManager.retBack()
+end
+function SelectionState.keypressed(k)
+	if k == "escape" then
+		print("[selection] return: nil")
 		StateManager.retBack()
 	end
+end
+function SelectionState.resize( w, h )
+	this.updateBox()
+end
+function this.updateBox()
+	this.fEntries = {}
+	this.boxWidth = math.min(lg.getWidth()-4, BUTTON_WIDTH)
+	this.boxX = (lg.getWidth()-this.boxWidth)/2
+	local cury = 0
+	for i,v in ipairs(this.entries) do
+		local width, lines = font:getWrap(v.t, this.boxWidth - BUTTON_BORDER*2)
+		buttonHeight =  BUTTON_BORDER*2 + lines*font:getHeight()
+
+		table.insert(this.fEntries, {t=v.t, ret=v.ret, y=cury, w=this.boxWidth, h=buttonHeight})
+
+		cury = cury + buttonHeight
+	end
+	this.boxHeight = cury
+	this.boxY = (lg.getHeight()-this.boxHeight)/2
 end
 StateManager.registerState("selection", SelectionState)

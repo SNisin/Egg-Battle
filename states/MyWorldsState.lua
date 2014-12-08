@@ -129,8 +129,17 @@ function MyWorldsState.returned(selection)
 		elseif selection == "rename" then
 
 		elseif selection == "delete" then
+			StateManager.addState("selection", 
+				{	
+					{t="Are you sure you want to delete\n\""..this.levels[this.selectedworld].name.."\"?"},
+					{ret="yesdelete",t="Yes"},
+					{ret="nodelete",t="No"}
+				})
+		elseif selection == "yesdelete" then
 			table.remove(this.levels, this.selectedworld)
 			SaveManager.saveGame()
+		elseif selection == "nodelete" then
+
 		end
 	end
 end
