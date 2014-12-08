@@ -159,7 +159,7 @@ function this.drawWorldButton(worldnum, world, addworld)
 
 		love.graphics.setColor(0,0,0,255)
 
-		local numlevels = #this.levels[worldnum]
+		local numlevels = #this.levels[worldnum].levels
 		love.graphics.printf(numlevels.." levels", x, y+BUTTON_HEIGHT-10-font:getHeight(), BUTTON_WIDTH, "center")
 	else
 		love.graphics.setColor(0,160,160,255)
