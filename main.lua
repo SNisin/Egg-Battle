@@ -116,9 +116,6 @@ function updateGraphics()
 	game.eggofY = (game.tileh-eggs[1]:getHeight()*game.scale)/2
 	
 end
-function canPlayLevel(level, all)
-
-end
 
 function table.copy(t, deep, seen)
     seen = seen or {}
