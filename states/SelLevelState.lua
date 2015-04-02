@@ -49,7 +49,11 @@ function SelLevelState.enter(levels, worldid, customlevels)
 		if this.customlevels ~= "myworld" then
 			if this.levels[this.playedlevel+1] then
 				this.playedlevel = this.playedlevel+1
-				StateManager.setState("game", this.levels[this.playedlevel], this.playedlevel, this.worldId, this.customlevels)
+				StateManager.setState("game", {	cmd="loadTable", 
+												world=this.levels[this.playedlevel], 
+												worldId=this.worldId, 
+												levelId=this.playedlevel, 
+												custom=this.customlevels})
 			end
 		end
 	elseif levels == "myworld" or levels == "playmyworld" then
@@ -119,7 +123,11 @@ function this.mouseclicked(x, y, button)
 					})
 				elseif LevelManager.canPlayLevel(this.worldId, i, this.customlevels) then
 					this.playedlevel = i
-					StateManager.setState("game", this.levels[i], i, this.worldId, this.customlevels)
+					StateManager.setState("game", {	cmd="loadTable", 
+													world=this.levels[i], 
+													worldId=this.worldId, 
+													levelId=i, 
+													custom=this.customlevels})
 					return
 				end
 			end
@@ -174,7 +182,11 @@ function SelLevelState.returned( selection )
 		if selection == "edit" then
 			StateManager.setState("editor", "edit", this.worldId, this.playedlevel)
 		elseif selection == "play" then
-			StateManager.setState("game", this.levels[this.playedlevel], this.playedlevel, this.worldId, this.customlevels)
+			StateManager.setState("game", {	cmd="loadTable", 
+											world=this.levels[this.playedlevel], 
+											worldId=this.worldId, 
+											levelId=this.playedlevel, 
+											custom=this.customlevels})
 		elseif selection == "move" then
 
 		elseif selection == "delete" then
