@@ -25,7 +25,7 @@ function GameState.load()
 	this.levelId = 1
 	this.customlevel = "no"
 end
-function GameState.enter( world, level, worldid, custom )
+function GameState.enter(args) -- {cmd="", worldId=0, levelId=0, world={}, custom=""}       world, level, worldid, custom )
 	this.clvl = {
 		world={
 			{0,0,0,0,0},
@@ -38,24 +38,24 @@ function GameState.enter( world, level, worldid, custom )
 		taps=0,
 		projectiles = {}
 	}
-	if type(world) == "table" then
-		table.merge(this.clvl, world)
-		this.worldId = worldid
-		this.levelId = level
-		this.customlevel = custom
-	elseif world == "again" then
+	if args.cmd == "loadTable" then -- Load level from table. Used for custom levels and editor
+		table.merge(this.clvl, args.world)
+		this.worldId = args.worldId
+		this.levelId = args.levelId
+		this.customlevel = args.custom
+	elseif args.cmd == "again" then  -- reset level, called from loststate and wonstate
 		this.clvl = table.copy(this.origlevel, true)
-	elseif type(level) == "number" then
-		if LevelManager.worlds[world].levels[level] then
-			this.clvl.world = table.copy(LevelManager.worlds[world].levels[level].world, true)
-			this.clvl.taps = LevelManager.worlds[world].levels[level].taps
-			this.worldId = world
-			this.levelId = level
+	elseif args.cmd == "loadLevel" then -- load official level
+		if LevelManager.worlds[args.worldId].levels[args.levelId] then
+			this.clvl.world = table.copy(LevelManager.worlds[args.worldId].levels[args.levelId].world, true)
+			this.clvl.taps = LevelManager.worlds[args.worldId].levels[args.levelId].taps
+			this.worldId = args.worldId
+			this.levelId = args.levelId
 			this.customlevel = "no"
 		else
 			StateManager.setState("menu")
 		end
-	else
+	else -- Unknown 
 		StateManager.setState("menu")
 	end
 	this.origlevel = table.copy(this.clvl, true)

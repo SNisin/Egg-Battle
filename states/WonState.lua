@@ -56,7 +56,7 @@ function WonState.mousepressed(x, y, button)
 		this.animBack("selectlevel", "next")
 	end
 	if clickedbutton == "tryagain" then
-		this.animBack("game", "again")
+		this.animBack("game", {cmd="again"})
 	end
 	if clickedbutton == "menu" then
 		this.animBack("selectlevel", "rettomenu")

@@ -105,7 +105,7 @@ function EditorState.mousereleased(mx, my, button)
 
 		if mx < font:getWidth("Play")+20*pixelscale then
 			print("[Editor] Play")
-			StateManager.setState("game", {world=this.world, taps=this.taps}, 1, 1, "edit")
+			StateManager.setState("game", {cmd="loadTable", world={world=this.world, taps=this.taps}, custom="edit"})
 		elseif mx > love.graphics.getWidth()-(menuwidth+offset*2) then
 			print("[Editor] Menu")
 			StateManager.addState("selection", 

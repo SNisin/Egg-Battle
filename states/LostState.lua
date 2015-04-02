@@ -56,7 +56,7 @@ end
 function LostState.mousepressed(x, y, button)
 	local clickedbutton = this.buttons:getClickedButton(x, y)
 	if clickedbutton == "tryagain" then
-		this.animBack("game", "again")
+		this.animBack("game", {cmd="again"})
 	end
 	if clickedbutton == "skip" then
 		this.animBack("selectlevel", "next")
