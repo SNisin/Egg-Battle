@@ -15,9 +15,9 @@
 
 function love.conf( t )
 	t.title = "Egg Battle"
-	t.window.vsync = false
+	t.window.vsync = true
 	t.window.icon = "gfx/icon.png"
-	t.console = true
+	t.console = false
 	t.window.resizable = true
 	t.window.width = 1080/3
 	t.window.height = 1794/3

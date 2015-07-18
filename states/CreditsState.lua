@@ -30,23 +30,36 @@ function CreditsState.load()
 	creditLines = {
 		{text="Programming", size=2, wrap=2},
 		{text="Joemag", size=1, wrap=4},
+		
 		{text="Level Design", size=2, wrap=2},
 		{text="Joemag", size=1, wrap=2},
 		{text="AnnynN", size=1, wrap=4},
+		
 		{text="Music", size=2, wrap=2},
-		{text="Sunny Fields Galloping by OctoEntandre ", size=1, wrap=1},
+		{text="Sunny Fields Galloping by OctoEntandre", size=1, wrap=1},
 		{text="(Link)", size=1, link="http://www.newgrounds.com/audio/listen/525333", wrap=1, color="link"},
+		{text="", size=1, wrap=2},
+		{text="Monkeys Spinning Monkeys by Kevin MacLeod", size=1, wrap=1},
+		{text="(Link)", size=1, link="http://incompetech.com/music/royalty-free/index.html?isrc=USUAN1400011", wrap=1, color="link"},
 		{text="", size=1, wrap=4},
+		
 		{text="Font", size=2, wrap=2},
 		{text="Kronika by Apostrophic Labs", size=1, wrap=1},
 		{text="(Link)", size=1, link="http://www.dafont.com/kronika.font", wrap=1, color="link"},
 		{text="", size=1, wrap=4},
+		
 		{text="Brushes", size=2, wrap=2},
-		{text="My Grass Brushes by Archelerone ", size=1, wrap=1},
+		{text="My Grass Brushes by Archelerone", size=1, wrap=1},
 		{text="(Link)", size=1, link="http://archeleron.deviantart.com/art/My-Grass-Brushes-82240003", wrap=1, color="link"},
 		{text="", size=1, wrap=2},
-		{text="Cloud Brushes ver.3 by cloud-no9 ", size=1, wrap=1},
+		{text="Cloud Brushes ver.3 by cloud-no9", size=1, wrap=1},
 		{text="(Link)", size=1, link="http://www.deviantart.com/art/Cloud-Brushes-ver-3-59000409", wrap=1, color="link"},
+		{text="", size=1, wrap=4},
+		
+		{text="Assets", size=2, wrap=2},
+		{text="Mobile Game GUI by GraphicBurger", size=1, wrap=1},
+		{text="(Link)", size=1, link="http://graphicburger.com/mobile-game-gui/", wrap=1, color="link"},
+		{text="", size=1, wrap=4},
 		
 		
 		{text="", size=1, wrap=2},

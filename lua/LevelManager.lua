@@ -35,7 +35,7 @@ function LevelManager.getWorldProgress(world, custom)
 	end
 	local worldprog = 0
 	if SaveManager.save.worlds and SaveManager.save.worlds[world] then
-		for i, v in ipairs(SaveManager.save.worlds[world]) do
+		for i, v in pairs(SaveManager.save.worlds[world]) do
 			if v then
 				worldprog = worldprog + 1
 			end
