@@ -86,6 +86,9 @@ function MenuState.mousepressed(x, y, button)
 		creditsAutoScroll = 0
 		StateManager.setState("credits")
 	end
+	if clickedbutton == "quit" then
+		love.event.quit()
+	end
 	
 
 	local mutewidth, muteheight = 48*pixelscale, 48*pixelscale
@@ -128,7 +131,8 @@ function this.setButtons()
 		this.buttons:addCenterButton("continue", "Continue Game", -60*pixelscale)
 	end
 	--this.buttons:addCenterButton("customlevels", "Custom Worlds", 30*pixelscale) -- not finished
-	this.buttons:addCenterButton("credits", "Credits", 120*pixelscale)
+	this.buttons:addCenterButton("credits", "Credits", 30*pixelscale)
+	this.buttons:addCenterButton("quit", "Quit", 120*pixelscale)
 end
 
 StateManager.registerState("menu", MenuState)
