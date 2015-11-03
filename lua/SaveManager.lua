@@ -16,11 +16,22 @@ SaveManager.loaded = false
 
 function SaveManager.loadGame()
 	if love.filesystem.isFile("save.lua") then
-		local content = love.filesystem.read("save.lua")
-		local xsave = Tserial.unpack(content)
-
-		table.merge(SaveManager.save, xsave)
-		SaveManager.save.version = GAMEVERSION
+		local status,err = pcall(function()
+			local content = love.filesystem.read("save.lua")
+			local xsave = Tserial.unpack(content)
+			if xsave then
+				table.merge(SaveManager.save, xsave)
+				SaveManager.save.version = GAMEVERSION
+			else
+				-- Corrupted Save File
+				SaveManager.saveGame()
+			end
+		end)
+		
+		if not status then
+			-- Corrupted Save File
+			SaveManager.saveGame()
+		end
 	else
 		SaveManager.saveGame()
 	end
