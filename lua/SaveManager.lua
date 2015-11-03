@@ -19,7 +19,7 @@ function SaveManager.loadGame()
 		local status,err = pcall(function()
 			local content = love.filesystem.read("save.lua")
 			local xsave = Tserial.unpack(content)
-			if xsave then
+			if type(xsave)=="table" then
 				table.merge(SaveManager.save, xsave)
 				SaveManager.save.version = GAMEVERSION
 			else
