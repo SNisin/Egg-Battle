@@ -12,7 +12,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 ]]
-GAMEVERSION = "2.0-7"
+GAMEVERSION = "2.1-8"
 
 
 -- Managers
