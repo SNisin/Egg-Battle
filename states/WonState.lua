@@ -28,7 +28,7 @@ function WonState.enter(world, level)
 	this.buttons:addCenterButton("tryagain", "Try again", 0)
 	this.buttons:addCenterButton("menu", "Return to menu", 80*pixelscale)
 	
-	this.anim = {prog = love.window.getHeight(), back=0}
+	this.anim = {prog = love.graphics.getHeight(), back=0}
 	this.animt = Tween.new(0.7, this.anim, {prog=0, back=100}, "outCubic")
 	this.world = world
 	this.levelwon = level
@@ -64,7 +64,7 @@ function WonState.mousepressed(x, y, button)
 end
 function this.animBack(func, x1, x2)
 	this.anim = {prog = 0, back=100, per=0}
-	this.animt = Tween.new(0.7, this.anim, {prog=love.window.getHeight(), back=0, per=1}, "inCubic")
+	this.animt = Tween.new(0.7, this.anim, {prog=love.graphics.getHeight(), back=0, per=1}, "inCubic")
 	local funct
 	if type(func) == "string" then
 		funct = function() print(func) StateManager.setState(func, x1, x2) end

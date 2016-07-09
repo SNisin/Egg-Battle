@@ -23,8 +23,9 @@ function StateManager.registerCallbacks()
 	local callbacks = {"focus","keypressed","keyreleased","mousefocus","mousepressed","mousereleased",
 						"textinput","threaderror","update","visible","gamepadaxis","gamepadpressed",
 						"gamepadreleased","joystickadded","joystickaxis","joystickhat","joystickpressed",
-						"joystickreleased","joystickremoved"} -- Callbacks called for last _currentState
-	local callbacksAll = {"draw", "resize"}	-- Callbacks called for all _currentStates
+						"joystickreleased","joystickremoved", "directorydropped", "filedropped", 
+						"textedited", "touchmoved", "touchpressed", "touchreleased", "wheelmoved"} -- Callbacks called for last _currentState
+	local callbacksAll = {"draw", "resize", "lowmemory"}	-- Callbacks called for all _currentStates
 	local callbacksVAll = {"load" ,"quit"} -- Callbacks called for all States
 	
 	for i, v in ipairs(callbacks) do

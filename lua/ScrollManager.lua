@@ -29,7 +29,7 @@ function ScrollManager:update(dt)
 	else
 		self.autoScrollTimer = self.autoScrollTimer -dt 		-- update timer
 	end
-	if love.mouse.isDown("l") and self.isClicked then
+	if love.mouse.isDown(1) and self.isClicked then
 		self.scrollY = self.clickedScroll + (self.clickedY - love.mouse.getY())  --scroll if clicked, based on mouse position
 
 		self.scrollVelocity = (self.scrollY - oldscroll)/dt
@@ -59,26 +59,25 @@ function ScrollManager:update(dt)
 
 
 end
+function ScrollManager:wheelmoved(x, y)
+	self.scrollY = self.scrollY - 50*y
 
-function ScrollManager:mousepressed(x, y, button)
+	self.autoScrollTimer = self.autoScrollTime
+end
+function ScrollManager:mousepressed(x, y, button, istouch)
 	self.scrollVelocity = 0
-	if button == "l" then
+	if button == 1 then
 		self.isClicked = true
 		self.clickedY = y 
 		self.clickedScroll = self.scrollY
 		self.notSelect = false
-	elseif button == "wu" then
-		self.scrollY = self.scrollY - 50*pixelscale
-		
-	elseif button == "wd" then
-		self.scrollY = self.scrollY + 50*pixelscale
 	end
 	self.autoScrollTimer = self.autoScrollTime
 end
 
 function ScrollManager:mousereleased(x, y, button)
 
-	if button == "l" then
+	if button == 1 then
 		if self.isClicked then
 			self.isClicked = false
 			self.autoScrollTimer = self.autoScrollTime

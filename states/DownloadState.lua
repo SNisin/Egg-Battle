@@ -28,9 +28,19 @@ end
 function DownloadState.update(dt)
 	this.downfile:update()
 	if this.downfile.success or this.downfile.error then
-		local retcont = Tserial.unpack(this.downfile.content, true)
-		if this.downfile.success and retcont then
-			StateManager.retBack(retcont)
+		
+		if this.downfile.success then
+			local retcont = Tserial.unpack(this.downfile.content, true)
+			if retcont then
+				StateManager.retBack(retcont)
+			else
+				retcont = {
+					error = true,
+					errortype = "connenction error",
+					errordesc = "malformed data"
+				}
+				StateManager.retBack(retcont)
+			end
 		else
 			retcont = {
 				error = true,
@@ -57,7 +67,7 @@ function DownloadState.draw()
 	lg.rectangle("line", rx, ry, rw, rh)
 	lg.setColor(0,0,0)
 	_width, nlines = font:getWrap(this.text, rw-10*pixelscale)
-	lg.printf(this.text, rx+5*pixelscale, (ry+rh/2)-font:getHeight()*nlines/2, rw-10*pixelscale, "center")
+	lg.printf(this.text, rx+5*pixelscale, (ry+rh/2)-font:getHeight()*#nlines/2, rw-10*pixelscale, "center")
 
 end
 function DownloadState.threaderror(thread, errorstr )

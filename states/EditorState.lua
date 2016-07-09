@@ -94,7 +94,23 @@ function EditorState.draw()
 	lg.print("Play", 10*pixelscale, (game.offY-font:getHeight())/2)
 end
 
-function EditorState.mousereleased(mx, my, button)
+function EditorState.wheelmoved(wx, wy)
+	local mx = love.mouse.getX()
+	local my = love.mouse.getY()
+	if my > game.offY then
+		local x = math.floor(mx/game.tilew)+1
+		local y = math.floor((my-game.offY)/game.tileh)+1
+		if this.world[y] and this.world[y][x] then
+			this.world[y][x] = this.world[y][x] + wy
+			if this.world[y][x]>#this.eggs then this.world[y][x] = #this.eggs end
+			if this.world[y][x]<0 then this.world[y][x] = 0 end
+
+			this.changedAfterSaving = true
+		end
+	end
+end
+
+function EditorState.mousepressed(mx, my, button)
 	--if my > love.graphics.getHeight()-10 then
 	--	EditorState.keypressed("return")
 	--	return
@@ -119,23 +135,17 @@ function EditorState.mousereleased(mx, my, button)
 		local x = math.floor(mx/game.tilew)+1
 		local y = math.floor((my-game.offY)/game.tileh)+1
 		if this.world[y] and this.world[y][x] then
-			if button == "wu" then
-				this.world[y][x] = this.world[y][x] + 1
-				if this.world[y][x]>#this.eggs then this.world[y][x] = #this.eggs end
-			elseif button == "wd" then
-				this.world[y][x] = this.world[y][x] - 1
-				if this.world[y][x]<0 then this.world[y][x] = 0 end
-			end
-			if button == "l" then
+			if button == 1 then
 				this.world[y][x] = this.world[y][x] + 1
 				if this.world[y][x]>#this.eggs then this.world[y][x] = 0 end
 			end
-			if button == "r" then
+			if button == 2 then
 				this.world[y][x] = this.world[y][x] - 1
 				if this.world[y][x]<0 then this.world[y][x] = #this.eggs end
 			end
 			this.changedAfterSaving = true
 		end
+		
 	end
 	
 end

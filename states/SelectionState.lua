@@ -87,7 +87,7 @@ function this.updateBox()
 	local cury = 0
 	for i,v in ipairs(this.entries) do
 		local width, lines = font:getWrap(v.t, this.boxWidth - BUTTON_BORDER*2)
-		buttonHeight =  BUTTON_BORDER*2 + lines*font:getHeight()
+		buttonHeight =  BUTTON_BORDER*2 + #lines*font:getHeight()
 
 		table.insert(this.fEntries, {t=v.t, ret=v.ret, y=cury, w=this.boxWidth, h=buttonHeight})
 

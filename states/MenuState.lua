@@ -30,7 +30,7 @@ function MenuState.enter()
 	if SaveManager.loaded then
 		this.setButtons()
 	end
-	this.anim = {prog = love.window.getHeight()}
+	this.anim = {prog = love.graphics.getHeight()}
 	this.animt = Tween.new(0.7, this.anim, {prog=0}, "outCubic")
 	if this.notFirstTime then
 		this.notMoveBack = true

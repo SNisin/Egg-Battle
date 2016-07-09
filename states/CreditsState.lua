@@ -139,7 +139,7 @@ function CreditsState.draw()
 		if v.text then
 			love.graphics.printf(v.text, 10*pixelscale, cposy, love.graphics.getWidth()-20*pixelscale, "center")
 			_width, nlines = cfont:getWrap(v.text, love.graphics.getWidth()-20*pixelscale)
-			nlines = nlines-1+(v.wrap or 1)
+			nlines = #nlines-1+(v.wrap or 1)
 			_height = nlines*cfont:getHeight()
 		end
 		if v.image then
@@ -170,8 +170,11 @@ function CreditsState.draw()
 	love.graphics.draw(barimg, 0, 0, 0, love.graphics.getWidth()/barimg:getWidth(), (50*pixelscale)/barimg:getHeight())
 	ButtonManager.drawBackButton()
 end
-function CreditsState.mousepressed(x, y, button)
-	this.scroll:mousepressed(x, y, button)
+function CreditsState.wheelmoved(x, y)
+	this.scroll:wheelmoved(x, y)
+end
+function CreditsState.mousepressed(x, y, button, istouch)
+	this.scroll:mousepressed(x, y, button, istouch)
 end
 function this.mouseclicked(x, y, button)
 	if y > game.offY then
