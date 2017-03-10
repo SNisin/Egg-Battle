@@ -135,11 +135,14 @@ function this.mouseclicked(x, y)
 		end
 	end
 end
-function CustomLevelsState.mousepressed(x, y, button)
-	this.scroll:mousepressed(x, y, button)
+function CustomLevelsState.wheelmoved(x, y)
+	this.scroll:wheelmoved(x, y)
 end
-function CustomLevelsState.mousereleased(x, y, button)
-	this.scroll:mousereleased(x, y, button)
+function CustomLevelsState.mousepressed(x, y, button, istouch)
+	this.scroll:mousepressed(x, y, button, istouch)
+end
+function CustomLevelsState.mousereleased(x, y, button, istouch)
+	this.scroll:mousereleased(x, y, button, istouch)
 end
 function CustomLevelsState.keypressed(k)
 	if k == "escape" then

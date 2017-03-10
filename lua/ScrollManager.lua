@@ -75,7 +75,7 @@ function ScrollManager:mousepressed(x, y, button, istouch)
 	self.autoScrollTimer = self.autoScrollTime
 end
 
-function ScrollManager:mousereleased(x, y, button)
+function ScrollManager:mousereleased(x, y, button, istouch)
 
 	if button == 1 then
 		if self.isClicked then

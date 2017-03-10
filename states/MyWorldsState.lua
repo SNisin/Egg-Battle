@@ -64,8 +64,11 @@ function MyWorldsState.draw()
 	this.scroll:drawScrollBar()
 end
 
-function MyWorldsState.mousepressed(x, y, button)
-	this.scroll:mousepressed(x, y, button)
+function MyWorldsState.wheelmoved(x, y)
+	this.scroll:wheelmoved(x, y)
+end
+function MyWorldsState.mousepressed(x, y, button, istouch)
+	this.scroll:mousepressed(x, y, button, istouch)
 end
 function this.mouseclicked(x, y, button)
 	if y > game.offY then
@@ -110,8 +113,8 @@ function MyWorldsState.keypressed(k)
 		StateManager.setState("menu")
 	end
 end
-function MyWorldsState.mousereleased(x, y, button)
-	this.scroll:mousereleased(x, y, button)
+function MyWorldsState.mousereleased(x, y, button, istouch)
+	this.scroll:mousereleased(x, y, button, istouch)
 end
 function MyWorldsState.resize(width, height)
 	local numinrow, offs = this.getWorldVars()

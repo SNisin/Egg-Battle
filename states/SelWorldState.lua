@@ -31,7 +31,7 @@ end
 function SelWorldState.enter()
 	SoundManager.playMusic("menu")
 	local numinrow, offs = this.getWorldVars()
-	local rows = math.floor(#LevelManager.worlds/numinrow)
+	local rows = math.ceil(#LevelManager.worlds/numinrow)
 	local contentheight = rows*(offs+BUTTON_HEIGHT)+offs
 	
 	this.scroll = ScrollManager.new({
@@ -61,8 +61,11 @@ function SelWorldState.draw()
 	this.scroll:drawScrollBar()
 end
 
-function SelWorldState.mousepressed(x, y, button)
-	this.scroll:mousepressed(x, y, button)
+function SelWorldState.wheelmoved(x, y)
+	this.scroll:wheelmoved(x, y)
+end
+function SelWorldState.mousepressed(x, y, button, istouch)
+	this.scroll:mousepressed(x, y, button, istouch)
 end
 function this.mouseclicked(x, y, button)
 	if y > game.offY then
@@ -84,12 +87,12 @@ function SelWorldState.keypressed(k)
 		StateManager.setState("menu")
 	end
 end
-function SelWorldState.mousereleased(x, y, button)
-	this.scroll:mousereleased(x, y, button)
+function SelWorldState.mousereleased(x, y, button, istouch)
+	this.scroll:mousereleased(x, y, button, istouch)
 end
 function SelWorldState.resize(width, height)
 	local numinrow, offs = this.getWorldVars()
-	local rows = math.floor(#LevelManager.worlds/numinrow)
+	local rows = math.ceil(#LevelManager.worlds/numinrow)
 	local contentheight = rows*(offs+BUTTON_HEIGHT)+offs
 	this.scroll:setContentHeight(contentheight)
 end

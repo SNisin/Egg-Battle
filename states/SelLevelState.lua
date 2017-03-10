@@ -103,8 +103,11 @@ function SelLevelState.draw()
 	this.scroll:drawScrollBar()
 end
 
-function SelLevelState.mousepressed(x, y, button)
-	this.scroll:mousepressed(x, y, button)
+function SelLevelState.wheelmoved(x, y)
+	this.scroll:wheelmoved(x, y)
+end
+function SelLevelState.mousepressed(x, y, button, istouch)
+	this.scroll:mousepressed(x, y, button, istouch)
 end
 function this.mouseclicked(x, y, button)
 	if y > game.offY then
@@ -165,8 +168,8 @@ function SelLevelState.keypressed(k)
 		end
 	end
 end
-function SelLevelState.mousereleased(x, y, button)
-	this.scroll:mousereleased(x, y, button)
+function SelLevelState.mousereleased(x, y, button, istouch)
+	this.scroll:mousereleased(x, y, button, istouch)
 end
 function SelLevelState.resize( width, height )
 	local numinrow, offs = this.getLevelVars()
